@@ -7,12 +7,12 @@ namespace ConwaysGameOfLife
 	internal class GameOfLife
 	{
 		private bool[,] cells;
-		private readonly bool isAlive = true;
+		private readonly bool aliveValue = true;
 		private int generation = 0;
 
 		private readonly int size = 20;
-		private readonly int row;
-		private readonly int col;
+		private readonly int numberOfRows;
+		private readonly int numberOfCols;
 
 		private readonly int factor = 2; // Affects the random seed.
 		private readonly bool prosperous = false;
@@ -26,8 +26,8 @@ namespace ConwaysGameOfLife
 		/// </summary>
 		public GameOfLife()
 		{
-			row = col = size;
-			cells = new bool[row, col];
+			numberOfRows = numberOfCols = size;
+			cells = new bool[numberOfRows, numberOfCols];
 		}
 
 		/// <summary>
@@ -90,28 +90,28 @@ namespace ConwaysGameOfLife
 		/// </summary>	trailing
 		private void GenerateNextGeneration()
 		{
-			var tmp = new bool[row, col];
+			var tmp = new bool[numberOfRows, numberOfCols];
 
 			for (var i = 0; i < cells.GetLength(0); i++)
 			{
 				for (var j = 0; j < cells.GetLength(1); j++)
 				{
-					var totalNeighbours = GetAliveNeighbours(i, j);
+					var totalNeighbours = GetAliveNeighbours(cells, i, j);
 					var checkNeighbours = (totalNeighbours == 2) || (totalNeighbours == 3);
 					//Console.WriteLine("Cell: (" + i + ", " + j + ") Value:" + cells[i, j] + "Neighbors (Alive):" + GetNeighbours((i, j)).Count);
 
 					if (cells[i, j] && checkNeighbours)
 					{
 						//Console.WriteLine("Cell: (" + i + ", " + j + ") Value:" + cells[i, j] + "Neighbors (Alive):" + GetNeighbours((i, j)).Count);
-						tmp[i, j] = isAlive;
+						tmp[i, j] = aliveValue;
 					}
 					else if ((!cells[i, j]) && (totalNeighbours == 3))
 					{
-						tmp[i, j] = isAlive;
+						tmp[i, j] = aliveValue;
 					}
 					else
 					{
-						tmp[i, j] = !isAlive;
+						tmp[i, j] = !aliveValue;
 					}
 				}
 			}
@@ -119,19 +119,19 @@ namespace ConwaysGameOfLife
 			generation++;
 		}
 
-		private int GetAliveNeighbours(int r, int c)
+		private int GetAliveNeighbours(bool[,] cells, int cellX, int cellY)
 		{
 			var aliveNeighbours = 0;
 
-			for (var i = r - 1; i < r + 2; i++)
+			for (var x = cellX - 1; x < cellX + 2; x++)
 			{
-				for (var j = c - 1; j < c + 2; j++)
+				for (var y = cellY - 1; y < cellY + 2; y++)
 				{
-					var validRow = (i >= 0) && (i <= (row - 1));
-					var validCol = (j >= 0) && (j <= (col - 1));
-					var thisCell = (i == r) && (j == c);
+					var validRow = (x >= 0) && (x <= (numberOfRows - 1));
+					var validCol = (y >= 0) && (y <= (numberOfCols - 1));
+					var thisCell = (x == cellX) && (y == cellY);
 
-					if (validRow && validCol && !thisCell && cells[i, j])
+					if (validRow && validCol && !thisCell && cells[x, y])
 					{
 						aliveNeighbours++;
 					}
