@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace ConwaysGameOfLife
@@ -119,24 +118,31 @@ namespace ConwaysGameOfLife
 			generation++;
 		}
 
-		private int GetAliveNeighbours(bool[,] cells, int cellX, int cellY)
+		private int GetAliveNeighbours(bool[,] cells, int cellY, int cellX)
 		{
 			var aliveNeighbours = 0;
 
-			for (var x = cellX - 1; x < cellX + 2; x++)
+			for (var y = cellY - 1; y < cellY + 2; y++)
 			{
-				for (var y = cellY - 1; y < cellY + 2; y++)
-				{
-					var validRow = (x >= 0) && (x <= (numberOfRows - 1));
-					var validCol = (y >= 0) && (y <= (numberOfCols - 1));
-					var thisCell = (x == cellX) && (y == cellY);
+				var validRow = (y >= 0) && (y <= (numberOfRows - 1));
 
-					if (validRow && validCol && !thisCell && cells[x, y])
+				if (!validRow)
+				{
+					continue;
+				}
+
+				for (var x = cellX - 1; x < cellX + 2; x++)
+				{
+					var validCol = (x >= 0) && (x <= (numberOfCols - 1));
+					var thisCell = (y == cellY) && (x == cellX);
+
+					if (validCol && !thisCell && cells[y, x])
 					{
 						aliveNeighbours++;
 					}
 				}
 			}
+
 			return aliveNeighbours;
 		}
 
@@ -151,7 +157,7 @@ namespace ConwaysGameOfLife
 			GenerateRandomSeed();
 			DrawCurrentGeneration();
 
-			Thread.Sleep(200);
+			Thread.Sleep(1000);
 		}
 
 		/// <summary>
@@ -167,7 +173,7 @@ namespace ConwaysGameOfLife
 				GenerateNextGeneration();
 				DrawCurrentGeneration();
 
-				Thread.Sleep(200);
+				Thread.Sleep(1000);
 			}
 		}
 	}
