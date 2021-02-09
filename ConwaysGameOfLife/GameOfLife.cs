@@ -96,7 +96,7 @@ namespace ConwaysGameOfLife
 			{
 				for (var j = 0; j < cells.GetLength(1); j++)
 				{
-					var totalNeighbours = GetLiveNeighbours((i, j)).Count;
+					var totalNeighbours = GetAliveNeighbours(i, j);
 					var checkNeighbours = (totalNeighbours == 2) || (totalNeighbours == 3);
 					//Console.WriteLine("Cell: (" + i + ", " + j + ") Value:" + cells[i, j] + "Neighbors (Alive):" + GetNeighbours((i, j)).Count);
 
@@ -119,37 +119,25 @@ namespace ConwaysGameOfLife
 			generation++;
 		}
 
-		/// <summary>
-		/// Gets all the alive neighbors for a given cell.
-		/// Currently uses a Dictionary and if statements.
-		/// </summary>
-		private Dictionary<(int, int), bool> GetLiveNeighbours((int, int) cellCoord)
+		private int GetAliveNeighbours(int r, int c)
 		{
-			var row = cellCoord.Item1;
-			var col = cellCoord.Item2;
-			var neighboursAlive = new Dictionary<(int, int), bool>();
-			//Console.WriteLine("Cell: " + "(" + row + ", " + col + "), isAlive?: " + cells[row, col]);
+			var aliveNeighbours = 0;
 
-			for (var i = row - 1; i < row + 2; i++)
+			for (var i = r - 1; i < r + 2; i++)
 			{
-				var validRows = (i >= 0) && (i <= (size - 1));
-
-				if (validRows)
+				for (var j = c - 1; j < c + 2; j++)
 				{
-					for (var j = col - 1; j < col + 2; j++)
-					{
-						var itself = (i == row) && (j == col);
-						var validColumns = (j >= 0) && (j <= (size - 1));
+					var validRow = (i >= 0) && (i <= (row - 1));
+					var validCol = (j >= 0) && (j <= (col - 1));
+					var thisCell = (i == r) && (j == c);
 
-						if (validColumns && !itself && cells[i, j])
-						{
-							neighboursAlive.Add((i, j), cells[i, j]);
-							//Console.WriteLine("Neighbor: (" + i + ", " + j + ")" + "Is neighbor alive?: " + cells[i, j]);
-						}
+					if (validRow && validCol && !thisCell && cells[i, j])
+					{
+						aliveNeighbours++;
 					}
 				}
 			}
-			return neighboursAlive;
+			return aliveNeighbours;
 		}
 
 		/// <summary>
