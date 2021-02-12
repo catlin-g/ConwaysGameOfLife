@@ -7,8 +7,8 @@ namespace ConwaysGameOfLife
 	{
 		private bool[,] cellsA;
 		private bool[,] cellsB;
-		private bool[,] draw;
-		private bool[,] update;
+		private bool[,] cellsDraw;
+		private bool[,] cellsUpdate;
 
 		private readonly bool aliveValue = true;
 		private int generation = 0;
@@ -32,8 +32,8 @@ namespace ConwaysGameOfLife
 			numberOfRows = numberOfCols = size;
 			cellsA = new bool[numberOfRows, numberOfCols];
 			cellsB = new bool[numberOfRows, numberOfCols];
-			draw = cellsA;
-			update = cellsB;
+			cellsDraw = cellsA;
+			cellsUpdate = cellsB;
 		}
 
 		/// <summary>
@@ -54,7 +54,7 @@ namespace ConwaysGameOfLife
 			{
 				for (var j = 0; j < size; j++)
 				{
-					draw[i, j] = prosperous
+					cellsDraw[i, j] = prosperous
 						? Convert.ToBoolean(random.Next(0, 2 + factor))
 						: !Convert.ToBoolean(random.Next(0, 2 + factor));
 				}
@@ -77,7 +77,7 @@ namespace ConwaysGameOfLife
 					{
 						Console.WriteLine();
 					}
-					var draw = this.draw[y, x] ? blackSquare + " " : "  ";
+					var draw = this.cellsDraw[y, x] ? blackSquare + " " : "  ";
 					Console.Write(draw);
 				}
 			}
@@ -89,22 +89,22 @@ namespace ConwaysGameOfLife
 
 		private void GenerateNextGeneration()
 		{
-			for (var y = 0; y < draw.GetLength(0); y++)
+			for (var y = 0; y < cellsDraw.GetLength(0); y++)
 			{
-				for (var x = 0; x < draw.GetLength(1); x++)
+				for (var x = 0; x < cellsDraw.GetLength(1); x++)
 				{
-					var aliveNeighbours = GetAliveNeighbours(draw, y, x);
+					var aliveNeighbours = GetAliveNeighbours(cellsDraw, y, x);
 					var checkNeighbours = (aliveNeighbours == 2) || (aliveNeighbours == 3);
-					var cellAlive = draw[y, x];
+					var cellAlive = cellsDraw[y, x];
 
-					gra[y, x] = (cellAlive && checkNeighbours) || (!cellAlive && (aliveNeighbours == 3));
+					cellsUpdate[y, x] = (cellAlive && checkNeighbours) || (!cellAlive && (aliveNeighbours == 3));
 				}
 			}
 
-			draw = cellsA;
-			update = cellsB;
+			cellsDraw = cellsA;
+			cellsUpdate = cellsB;
 			cellsA = cellsB;
-			cellsB = draw;
+			cellsB = cellsDraw;
 
 			generation++;
 		}
