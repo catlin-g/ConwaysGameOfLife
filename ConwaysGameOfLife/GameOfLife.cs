@@ -89,9 +89,9 @@ namespace ConwaysGameOfLife
 
 		private void GenerateNextGeneration()
 		{
-			for (var y = 0; y < cellsDraw.GetLength(0); y++)
+			for (var y = 0; y < numberOfRows; y++)
 			{
-				for (var x = 0; x < cellsDraw.GetLength(1); x++)
+				for (var x = 0; x < numberOfCols; x++)
 				{
 					var aliveNeighbours = GetAliveNeighbours(cellsDraw, y, x);
 					var checkNeighbours = (aliveNeighbours == 2) || (aliveNeighbours == 3);
@@ -101,10 +101,9 @@ namespace ConwaysGameOfLife
 				}
 			}
 
-			cellsDraw = cellsA;
-			cellsUpdate = cellsB;
-			cellsA = cellsB;
-			cellsB = cellsDraw;
+			var temp = cellsDraw;
+			cellsDraw = cellsUpdate;
+			cellsUpdate = temp;
 
 			generation++;
 		}
