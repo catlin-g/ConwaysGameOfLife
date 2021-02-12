@@ -32,8 +32,8 @@ namespace ConwaysGameOfLife
 			numberOfRows = numberOfCols = size;
 			cellsA = new bool[numberOfRows, numberOfCols];
 			cellsB = new bool[numberOfRows, numberOfCols];
-			videoPointer = new bool[numberOfRows, numberOfCols];
-			graphics = new bool[numberOfRows, numberOfCols];
+			videoPointer = cellsA;
+			graphics = cellsB;
 		}
 
 		/// <summary>
@@ -54,7 +54,7 @@ namespace ConwaysGameOfLife
 			{
 				for (var j = 0; j < size; j++)
 				{
-					cellsA[i, j] = prosperous
+					videoPointer[i, j] = prosperous
 						? Convert.ToBoolean(random.Next(0, 2 + factor))
 						: !Convert.ToBoolean(random.Next(0, 2 + factor));
 				}
@@ -77,7 +77,7 @@ namespace ConwaysGameOfLife
 					{
 						Console.WriteLine();
 					}
-					var draw = cellsA[y, x] ? blackSquare + " " : "  ";
+					var draw = videoPointer[y, x] ? blackSquare + " " : "  ";
 					Console.Write(draw);
 				}
 			}
@@ -89,15 +89,15 @@ namespace ConwaysGameOfLife
 
 		private void GenerateNextGeneration()
 		{
-			for (var y = 0; y < cellsA.GetLength(0); y++)
+			for (var y = 0; y < videoPointer.GetLength(0); y++)
 			{
-				for (var x = 0; x < cellsA.GetLength(1); x++)
+				for (var x = 0; x < videoPointer.GetLength(1); x++)
 				{
-					var aliveNeighbours = GetAliveNeighbours(cellsA, y, x);
+					var aliveNeighbours = GetAliveNeighbours(videoPointer, y, x);
 					var checkNeighbours = (aliveNeighbours == 2) || (aliveNeighbours == 3);
-					var cellAlive = cellsA[y, x];
+					var cellAlive = videoPointer[y, x];
 
-					cellsB[y, x] = (cellAlive && checkNeighbours) || (!cellAlive && (aliveNeighbours == 3));
+					graphics[y, x] = (cellAlive && checkNeighbours) || (!cellAlive && (aliveNeighbours == 3));
 				}
 			}
 
