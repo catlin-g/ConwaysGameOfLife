@@ -7,8 +7,8 @@ namespace ConwaysGameOfLife
 	{
 		private bool[,] cellsA;
 		private bool[,] cellsB;
-		private bool[,] videoPointer;
-		private bool[,] graphics;
+		private bool[,] draw;
+		private bool[,] update;
 
 		private readonly bool aliveValue = true;
 		private int generation = 0;
@@ -32,8 +32,8 @@ namespace ConwaysGameOfLife
 			numberOfRows = numberOfCols = size;
 			cellsA = new bool[numberOfRows, numberOfCols];
 			cellsB = new bool[numberOfRows, numberOfCols];
-			videoPointer = cellsA;
-			graphics = cellsB;
+			draw = cellsA;
+			update = cellsB;
 		}
 
 		/// <summary>
@@ -54,7 +54,7 @@ namespace ConwaysGameOfLife
 			{
 				for (var j = 0; j < size; j++)
 				{
-					videoPointer[i, j] = prosperous
+					draw[i, j] = prosperous
 						? Convert.ToBoolean(random.Next(0, 2 + factor))
 						: !Convert.ToBoolean(random.Next(0, 2 + factor));
 				}
@@ -77,7 +77,7 @@ namespace ConwaysGameOfLife
 					{
 						Console.WriteLine();
 					}
-					var draw = videoPointer[y, x] ? blackSquare + " " : "  ";
+					var draw = this.draw[y, x] ? blackSquare + " " : "  ";
 					Console.Write(draw);
 				}
 			}
@@ -89,22 +89,22 @@ namespace ConwaysGameOfLife
 
 		private void GenerateNextGeneration()
 		{
-			for (var y = 0; y < videoPointer.GetLength(0); y++)
+			for (var y = 0; y < draw.GetLength(0); y++)
 			{
-				for (var x = 0; x < videoPointer.GetLength(1); x++)
+				for (var x = 0; x < draw.GetLength(1); x++)
 				{
-					var aliveNeighbours = GetAliveNeighbours(videoPointer, y, x);
+					var aliveNeighbours = GetAliveNeighbours(draw, y, x);
 					var checkNeighbours = (aliveNeighbours == 2) || (aliveNeighbours == 3);
-					var cellAlive = videoPointer[y, x];
+					var cellAlive = draw[y, x];
 
-					graphics[y, x] = (cellAlive && checkNeighbours) || (!cellAlive && (aliveNeighbours == 3));
+					gra[y, x] = (cellAlive && checkNeighbours) || (!cellAlive && (aliveNeighbours == 3));
 				}
 			}
 
-			videoPointer = cellsA;
-			graphics = cellsB;
+			draw = cellsA;
+			update = cellsB;
 			cellsA = cellsB;
-			cellsB = videoPointer;
+			cellsB = draw;
 
 			generation++;
 		}
