@@ -5,11 +5,15 @@ namespace ConwaysGameOfLife
 {
 	internal class GameOfLife
 	{
-		private bool[,] cells;
+		private bool[,] cellsA;
+		private bool[,] cellsB;
+		private bool[,] videoPointer;
+		private bool[,] graphics;
+
 		private readonly bool aliveValue = true;
 		private int generation = 0;
 
-		private readonly int size = 20;
+		private readonly int size = 6;
 		private readonly int numberOfRows;
 		private readonly int numberOfCols;
 
@@ -26,7 +30,10 @@ namespace ConwaysGameOfLife
 		public GameOfLife()
 		{
 			numberOfRows = numberOfCols = size;
-			cells = new bool[numberOfRows, numberOfCols];
+			cellsA = new bool[numberOfRows, numberOfCols];
+			cellsB = new bool[numberOfRows, numberOfCols];
+			videoPointer = new bool[numberOfRows, numberOfCols];
+			graphics = new bool[numberOfRows, numberOfCols];
 		}
 
 		/// <summary>
@@ -41,13 +48,13 @@ namespace ConwaysGameOfLife
 		/// </summary>
 		private void GenerateRandomSeed()
 		{
-			var random = new Random();
+			var random = new Random(800);
 
 			for (var i = 0; i < size; i++)
 			{
 				for (var j = 0; j < size; j++)
 				{
-					cells[i, j] = prosperous
+					cellsA[i, j] = prosperous
 						? Convert.ToBoolean(random.Next(0, 2 + factor))
 						: !Convert.ToBoolean(random.Next(0, 2 + factor));
 				}
@@ -62,16 +69,15 @@ namespace ConwaysGameOfLife
 		{
 			var blackSquare = "\u25A0"; // Alive cell
 
-			for (var i = 0; i < size; i++)
+			for (var y = 0; y < size; y++)
 			{
-				for (var j = 0; j < size; j++)
+				for (var x = 0; x < size; x++)
 				{
-					if (j == 0)
+					if (x == 0)
 					{
 						Console.WriteLine();
 					}
-					//var draw = cells[i, j] ? "(" + i + ", " + j + ")" : "(" + i + ", " + j + ")";
-					var draw = cells[i, j] ? blackSquare + " " : "  ";
+					var draw = cellsA[y, x] ? blackSquare + " " : "  ";
 					Console.Write(draw);
 				}
 			}
@@ -81,40 +87,25 @@ namespace ConwaysGameOfLife
 			Console.Write("Generation: " + generation);
 		}
 
-		/// <summary>
-		/// Calculates the next generation via the following rules:
-		///     Any live cell with two or three live neighbors survives.
-		///     Any dead cell with three live neighbors becomes a live cell.
-		///     All other live cells die in the next generation. Similarly, all other dead cells stay dead.
-		/// </summary>	trailing
 		private void GenerateNextGeneration()
 		{
-			var tmp = new bool[numberOfRows, numberOfCols];
-
-			for (var i = 0; i < cells.GetLength(0); i++)
+			for (var y = 0; y < cellsA.GetLength(0); y++)
 			{
-				for (var j = 0; j < cells.GetLength(1); j++)
+				for (var x = 0; x < cellsA.GetLength(1); x++)
 				{
-					var totalNeighbours = GetAliveNeighbours(cells, i, j);
-					var checkNeighbours = (totalNeighbours == 2) || (totalNeighbours == 3);
-					//Console.WriteLine("Cell: (" + i + ", " + j + ") Value:" + cells[i, j] + "Neighbors (Alive):" + GetNeighbours((i, j)).Count);
+					var aliveNeighbours = GetAliveNeighbours(cellsA, y, x);
+					var checkNeighbours = (aliveNeighbours == 2) || (aliveNeighbours == 3);
+					var cellAlive = cellsA[y, x];
 
-					if (cells[i, j] && checkNeighbours)
-					{
-						//Console.WriteLine("Cell: (" + i + ", " + j + ") Value:" + cells[i, j] + "Neighbors (Alive):" + GetNeighbours((i, j)).Count);
-						tmp[i, j] = aliveValue;
-					}
-					else if ((!cells[i, j]) && (totalNeighbours == 3))
-					{
-						tmp[i, j] = aliveValue;
-					}
-					else
-					{
-						tmp[i, j] = !aliveValue;
-					}
+					cellsB[y, x] = (cellAlive && checkNeighbours) || (!cellAlive && (aliveNeighbours == 3));
 				}
 			}
-			cells = tmp;
+
+			videoPointer = cellsA;
+			graphics = cellsB;
+			cellsA = cellsB;
+			cellsB = videoPointer;
+
 			generation++;
 		}
 
@@ -157,7 +148,7 @@ namespace ConwaysGameOfLife
 			GenerateRandomSeed();
 			DrawCurrentGeneration();
 
-			Thread.Sleep(1000);
+			Thread.Sleep(2000);
 		}
 
 		/// <summary>
@@ -173,7 +164,7 @@ namespace ConwaysGameOfLife
 				GenerateNextGeneration();
 				DrawCurrentGeneration();
 
-				Thread.Sleep(1000);
+				Thread.Sleep(2000);
 			}
 		}
 	}
