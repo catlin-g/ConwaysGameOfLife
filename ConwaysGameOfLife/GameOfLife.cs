@@ -5,12 +5,11 @@ namespace ConwaysGameOfLife
 {
 	internal class GameOfLife
 	{
-		private bool[,] cellsA;
-		private bool[,] cellsB;
+		private readonly bool[,] cellsA;
+		private readonly bool[,] cellsB;
 		private bool[,] cellsDraw;
 		private bool[,] cellsUpdate;
 
-		private readonly bool aliveValue = true;
 		private int generation = 0;
 
 		private readonly int size = 6;
