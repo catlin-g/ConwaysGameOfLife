@@ -11,21 +11,15 @@ namespace ConwaysGameOfLife
 		private bool[,] cellsUpdate;
 
 		private int generation = 0;
+		private int populationSize;
 
-		private readonly int size = 6;
+		private readonly int size = 12;
 		private readonly int numberOfRows;
 		private readonly int numberOfCols;
 
-		private readonly int factor = 2; // Affects the random seed.
+		private readonly int factor = 2;
 		private readonly bool prosperous = false;
 
-		/// <summary>
-		/// Create a new Conway's Game of Life.
-		///
-		/// Size = 3 => [row, col] => {{T, F, F},
-		//                            { F, T, F},
-		//                            { F, T, T}}
-		/// </summary>
 		public GameOfLife()
 		{
 			numberOfRows = numberOfCols = size;
@@ -35,59 +29,51 @@ namespace ConwaysGameOfLife
 			cellsUpdate = cellsB;
 		}
 
-		/// <summary>
-		/// Creates a random starting seed.
-		///
-		/// The 2D array is populated with either T or F.
-		///
-		/// The factor variable can be adjusted to increase or decrease the number
-		/// of alive or dead cells. A random number can be between [0, 2 + factor].
-		/// The prosperous switch is used to determine whether there will be more
-		/// alive cells than dead cells to when the seed is created.
-		/// </summary>
 		private void GenerateRandomSeed()
 		{
-			var random = new Random(800);
+			var random = new Random();
 
-			for (var i = 0; i < size; i++)
+			for (var y = 0; y < numberOfRows; y++)
 			{
-				for (var j = 0; j < size; j++)
+				for (var x = 0; x < numberOfCols; x++)
 				{
-					cellsDraw[i, j] = prosperous
+					cellsDraw[y, x] = prosperous
 						? Convert.ToBoolean(random.Next(0, 2 + factor))
 						: !Convert.ToBoolean(random.Next(0, 2 + factor));
 				}
 			}
 		}
 
-		/// <summary>
-		/// Draws the current generation/iteration to the console using
-		/// a black square as the alive cell.
-		/// </summary>
 		private void DrawCurrentGeneration()
 		{
 			var blackSquare = "\u25A0"; // Alive cell
 
-			for (var y = 0; y < size; y++)
+			for (var y = 0; y < numberOfRows; y++)
 			{
-				for (var x = 0; x < size; x++)
+				for (var x = 0; x < numberOfCols; x++)
 				{
 					if (x == 0)
 					{
 						Console.WriteLine();
 					}
-					var draw = this.cellsDraw[y, x] ? blackSquare + " " : "  ";
+					var draw = this.cellsDraw[y, x] ? blackSquare + " " : ". ";
 					Console.Write(draw);
 				}
 			}
+		}
 
+		private void DrawGUI()
+		{
 			Console.WriteLine();
 			Console.WriteLine();
-			Console.Write("Generation: " + generation);
+			Console.WriteLine("Generation: " + generation);
+			Console.WriteLine("Population: " + populationSize);
 		}
 
 		private void GenerateNextGeneration()
 		{
+			populationSize = 0;
+
 			for (var y = 0; y < numberOfRows; y++)
 			{
 				for (var x = 0; x < numberOfCols; x++)
@@ -135,34 +121,46 @@ namespace ConwaysGameOfLife
 			return aliveNeighbours;
 		}
 
-		/// <summary>
-		/// Initialize new Game Of Life instance.
-		/// </summary>
-		public void Initialise()
+		private void RemoveConsoleFlicker()
 		{
 			Console.CursorVisible = false;
-			Console.SetCursorPosition(0, 0);
+			Console.SetCursorPosition(0, 10);
+		}
+
+		private void SaveState()
+		{
+
+		}
+
+		private void LoadState()
+		{
+
+		}
+
+		public void Initialise()
+		{
+			RemoveConsoleFlicker();
 
 			GenerateRandomSeed();
 			DrawCurrentGeneration();
+			DrawGUI();
 
-			Thread.Sleep(2000);
+			Thread.Sleep(200);
 		}
 
-		/// <summary>
-		/// Run Conway's Game of Life.
-		/// </summary>
 		public void Run()
 		{
-			while (true)
+			var cellsAlive = true;
+
+			while (cellsAlive)
 			{
-				Console.CursorVisible = false;
-				Console.SetCursorPosition(0, 0);
+				RemoveConsoleFlicker();
 
 				GenerateNextGeneration();
 				DrawCurrentGeneration();
+				DrawGUI();
 
-				Thread.Sleep(2000);
+				Thread.Sleep(200);
 			}
 		}
 	}
