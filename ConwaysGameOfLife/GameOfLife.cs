@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 
 namespace ConwaysGameOfLife
@@ -134,14 +135,49 @@ namespace ConwaysGameOfLife
 
 		private void LoadState()
 		{
+			// Hard Coded Input
+			var path = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\Glider.txt";
+			var linearTranslate = 1;
 
+			//
+			var rows = File.ReadAllLines(path);
+			var cellsPreset = new bool[rows.Length, rows[0].Length];
+			var x = 0;
+			var y = 0;
+
+			foreach (var row in rows)
+			{
+				x = 0;
+				foreach (var col in row)
+				{
+					cellsPreset[y, x] = col == '1';
+					x++;
+				}
+				y++;
+			}
+
+			cellsDraw = (rows.Length == numberOfRows) && (rows[0].Length == numberOfCols) ? cellsPreset : Translate(cellsPreset, 'l');
+		}
+
+		public bool[,] Translate(bool[,] cells, char location)
+		{
+
+			for (var y = 0; y < cells.GetLength(1); y++)
+			{
+				for (var x = 0; x < cells.GetLength(0); x++)
+				{
+					cellsDraw[y, x] = cells[y, x];
+				}
+			}
+			return cellsDraw;
 		}
 
 		public void Initialise()
 		{
 			RemoveConsoleFlicker();
 
-			GenerateRandomSeed();
+			//GenerateRandomSeed();
+			LoadState();
 			DrawCurrentGeneration();
 			DrawGUI();
 
