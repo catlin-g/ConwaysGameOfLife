@@ -53,8 +53,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Data\Beacon.txt" />
+    <Content Include="Data\Blinker.txt" />
+    <Content Include="Data\Clock.txt" />
     <Content Include="Data\Glider.txt" />
     <Content Include="Data\Loaf.txt" />
+    <Content Include="Data\Pentadecathlon.txt" />
+    <Content Include="Data\Pulsar.txt" />
+    <Content Include="Data\Toad.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

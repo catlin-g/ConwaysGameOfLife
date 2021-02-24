@@ -14,7 +14,7 @@ namespace ConwaysGameOfLife
 		private int generation = 0;
 		private int populationSize;
 
-		private readonly int size = 12;
+		private readonly int size = 20;
 		private readonly int numberOfRows;
 		private readonly int numberOfCols;
 
@@ -125,18 +125,18 @@ namespace ConwaysGameOfLife
 		private void RemoveConsoleFlicker()
 		{
 			Console.CursorVisible = false;
-			Console.SetCursorPosition(0, 10);
+			Console.SetCursorPosition(0, 0);
 		}
 
 		private void SaveState()
 		{
-
 		}
 
+		// Currently, the file has to contain a minimum of 1 cells, and cannot be greater than what the board is initialised to.
 		private void LoadState()
 		{
 			// Hard Coded Input
-			var path = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\Glider.txt";
+			var path = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\Pulsar.txt";
 			var linearTranslate = 1;
 
 			//
@@ -156,15 +156,14 @@ namespace ConwaysGameOfLife
 				y++;
 			}
 
-			cellsDraw = (rows.Length == numberOfRows) && (rows[0].Length == numberOfCols) ? cellsPreset : Translate(cellsPreset, 'l');
+			cellsDraw = (rows.Length == numberOfRows) && (rows[0].Length == numberOfCols) ? cellsPreset : Translate(cellsPreset);
 		}
 
-		public bool[,] Translate(bool[,] cells, char location)
+		public bool[,] Translate(bool[,] cells)
 		{
-
-			for (var y = 0; y < cells.GetLength(1); y++)
+			for (var y = 0; y < cells.GetLength(0); y++)
 			{
-				for (var x = 0; x < cells.GetLength(0); x++)
+				for (var x = 0; x < cells.GetLength(1); x++)
 				{
 					cellsDraw[y, x] = cells[y, x];
 				}
@@ -188,6 +187,7 @@ namespace ConwaysGameOfLife
 		{
 			var cellsAlive = true;
 
+
 			while (cellsAlive)
 			{
 				RemoveConsoleFlicker();
@@ -198,6 +198,8 @@ namespace ConwaysGameOfLife
 
 				Thread.Sleep(200);
 			}
+
+
 		}
 	}
 }
