@@ -128,9 +128,6 @@ namespace ConwaysGameOfLife
 			Console.SetCursorPosition(0, 0);
 		}
 
-		private void SaveState()
-		{
-		}
 
 		// Currently, the file has to contain a minimum of 1 cells, and cannot be greater than what the board is initialised to.
 		private void LoadState()
