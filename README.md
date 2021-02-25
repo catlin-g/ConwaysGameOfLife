@@ -1,10 +1,10 @@
 # Conway's Game of Life
 
-### Description
+## Description
 
 A basic console application of Conway's Game of Life (GoL) written in C#.
 
-### Usage
+## Usage
 
 Initial configuration (seed) of the game can be either:
 * a 'preset' loaded from a .txt file, or 
@@ -17,5 +17,12 @@ The first and subsequent generations are then determined using the following rul
 
 As GoL is infinite, but the size of the program is finite, this lead to 'pathological edge effects'. Currently the program does not deal with this issue, but creating a buffer or wrapping is a future implementation.
 
-### References
+* Add GIF/Images of the program running.
+
+## Contributors
+
+Code Reviews: Benjamin Sutas | https://github.com/LeftofZen
+
+## References
+
 * https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
