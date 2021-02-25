@@ -1,13 +1,21 @@
-Conway's Game of Life
+# Conway's Game of Life
 
-Description:
-A basic implementation of Conway's Game of Life (GoL) using the console. 
+### Description
 
-Initial configuration (seed) can be either a 'preset' loaded from a text file, or 'randomised'. The program then uses the following rules to determine the next generation:
+A basic console application of Conway's Game of Life (GoL) written in C#.
 
-1) Any live cell with two or three neighbours survives.
-2) Any dead cell with three live neighbours becomes a live cell.
-3) All other live cells die in the next generation. All other dead cells stay dead.
+### Usage
 
+Initial configuration (seed) of the game can be either:
+* a 'preset' loaded from a .txt file, or 
+* a 'randomised' field of dead/alive cells. 
+
+The first and subsequent generations are then determined using the following rules:
+1. Any live cell with two or three neighbours survives.
+2. Any dead cell with three live neighbours becomes a live cell.
+3. All other live cells die in the next generation. All other dead cells stay dead.
 
 As GoL is infinite, but the size of the program is finite, this lead to 'pathological edge effects'. Currently the program does not deal with this issue, but creating a buffer or wrapping is a future implementation.
+
+### References
+* https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
