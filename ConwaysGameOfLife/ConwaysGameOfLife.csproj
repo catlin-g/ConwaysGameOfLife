@@ -53,14 +53,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Data\Beacon.txt" />
-    <Content Include="Data\Blinker.txt" />
-    <Content Include="Data\Clock.txt" />
-    <Content Include="Data\Glider.txt" />
-    <Content Include="Data\Loaf.txt" />
-    <Content Include="Data\Pentadecathlon.txt" />
-    <Content Include="Data\Pulsar.txt" />
-    <Content Include="Data\Toad.txt" />
+    <Content Include="Data\Gun\GosperGliderGun.txt" />
+    <Content Include="Data\Oscillator\Beacon.txt" />
+    <Content Include="Data\Oscillator\Blinker.txt" />
+    <Content Include="Data\Oscillator\Clock.txt" />
+    <Content Include="Data\Oscillator\Clock2.txt" />
+    <Content Include="Data\Spaceship\Glider.txt" />
+    <Content Include="Data\Spaceship\LightWeightSpaceShip.txt" />
+    <Content Include="Data\StillLife\Block.txt" />
+    <Content Include="Data\StillLife\Boat.txt" />
+    <Content Include="Data\StillLife\Loaf.txt" />
+    <Content Include="Data\Oscillator\Pentadecathlon.txt" />
+    <Content Include="Data\Oscillator\Pulsar.txt" />
+    <Content Include="Data\Oscillator\Toad.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

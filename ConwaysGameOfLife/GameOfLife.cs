@@ -57,7 +57,7 @@ namespace ConwaysGameOfLife
 					{
 						Console.WriteLine();
 					}
-					var draw = this.cellsDraw[y, x] ? blackSquare + " " : ". ";
+					var draw = this.cellsDraw[y, x] ? blackSquare + " " : "  ";
 					Console.Write(draw);
 				}
 			}
@@ -136,7 +136,7 @@ namespace ConwaysGameOfLife
 		private void LoadState()
 		{
 			// Hard Coded Input
-			var path = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\Pulsar.txt";
+			var path = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\Spaceship\LightWeightSpaceShip.txt";
 			var linearTranslate = 1;
 
 			//
@@ -178,9 +178,9 @@ namespace ConwaysGameOfLife
 			//GenerateRandomSeed();
 			LoadState();
 			DrawCurrentGeneration();
-			DrawGUI();
+			//DrawGUI();
 
-			Thread.Sleep(200);
+			Thread.Sleep(2000);
 		}
 
 		public void Run()
@@ -194,12 +194,10 @@ namespace ConwaysGameOfLife
 
 				GenerateNextGeneration();
 				DrawCurrentGeneration();
-				DrawGUI();
+				//DrawGUI();
 
-				Thread.Sleep(200);
+				Thread.Sleep(2000);
 			}
-
-
 		}
 	}
 }
