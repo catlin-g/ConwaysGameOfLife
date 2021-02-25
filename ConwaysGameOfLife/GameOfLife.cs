@@ -134,17 +134,14 @@ namespace ConwaysGameOfLife
 		{
 			// Hard Coded Input
 			var path = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\Spaceship\LightWeightSpaceShip.txt";
-			var linearTranslate = 1;
 
-			//
 			var rows = File.ReadAllLines(path);
 			var cellsPreset = new bool[rows.Length, rows[0].Length];
-			var x = 0;
 			var y = 0;
 
 			foreach (var row in rows)
 			{
-				x = 0;
+				var x = 0;
 				foreach (var col in row)
 				{
 					cellsPreset[y, x] = col == '1';
@@ -156,7 +153,7 @@ namespace ConwaysGameOfLife
 			cellsDraw = (rows.Length == numberOfRows) && (rows[0].Length == numberOfCols) ? cellsPreset : Translate(cellsPreset);
 		}
 
-		public bool[,] Translate(bool[,] cells)
+		private bool[,] Translate(bool[,] cells)
 		{
 			for (var y = 0; y < cells.GetLength(0); y++)
 			{
@@ -166,6 +163,11 @@ namespace ConwaysGameOfLife
 				}
 			}
 			return cellsDraw;
+		}
+
+		private void StartMenu()
+		{
+
 		}
 
 		public void Initialise()
