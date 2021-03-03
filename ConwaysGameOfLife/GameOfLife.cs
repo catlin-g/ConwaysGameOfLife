@@ -21,6 +21,9 @@ namespace ConwaysGameOfLife
 		private readonly int factor = 2;
 		private readonly bool prosperous = false;
 
+		private bool isPreset = false;
+		private string path = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\";
+
 		public GameOfLife()
 		{
 			numberOfRows = numberOfCols = size;
@@ -128,13 +131,9 @@ namespace ConwaysGameOfLife
 			Console.SetCursorPosition(0, 0);
 		}
 
-
 		// Currently, the file has to contain a minimum of 1 cells, and cannot be greater than what the board is initialised to.
 		private void LoadState()
 		{
-			// Hard Coded Input
-			var path = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\Spaceship\LightWeightSpaceShip.txt";
-
 			var rows = File.ReadAllLines(path);
 			var cellsPreset = new bool[rows.Length, rows[0].Length];
 			var y = 0;
@@ -165,27 +164,59 @@ namespace ConwaysGameOfLife
 			return cellsDraw;
 		}
 
-		private void StartMenu()
+		public void HandleUserInput()
 		{
+			ConsoleKeyInfo cki;
 
+			Console.WriteLine("Press 'R' to generate a random seed or 'P' to select a preset.");
+			Console.WriteLine("Press 'Enter' to continue.");
+
+			do
+			{
+				cki = Console.ReadKey();
+				if (cki.Key == ConsoleKey.R)
+				{
+					isPreset = false;
+				}
+				if (cki.Key == ConsoleKey.P)
+				{
+					isPreset = true;
+				}
+			} while (cki.Key != ConsoleKey.Enter);
+
+			if (isPreset)
+			{
+				Console.WriteLine("Type the name of the preset to load and press 'Enter'.");
+
+				var userInput = Console.ReadLine();
+				path += userInput + ".txt";
+			}
 		}
 
 		public void Initialise()
 		{
+			Console.Clear();
+
 			RemoveConsoleFlicker();
 
-			//GenerateRandomSeed();
-			LoadState();
-			DrawCurrentGeneration();
-			//DrawGUI();
+			if (isPreset)
+			{
+				LoadState();
+			}
+			else
+			{
+				GenerateRandomSeed();
+			}
 
-			Thread.Sleep(2000);
+			DrawCurrentGeneration();
+			DrawGUI();
+
+			Thread.Sleep(200);
 		}
 
 		public void Run()
 		{
 			var cellsAlive = true;
-
 
 			while (cellsAlive)
 			{
@@ -193,9 +224,9 @@ namespace ConwaysGameOfLife
 
 				GenerateNextGeneration();
 				DrawCurrentGeneration();
-				//DrawGUI();
+				DrawGUI();
 
-				Thread.Sleep(2000);
+				Thread.Sleep(200);
 			}
 		}
 	}
