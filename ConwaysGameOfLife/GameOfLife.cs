@@ -12,7 +12,7 @@ namespace ConwaysGameOfLife
 		private bool[,] cellsUpdate;
 
 		private int generation = 0;
-		private int populationSize;
+		private readonly int populationSize = 0;
 
 		private readonly int size = 20;
 		private readonly int numberOfRows;
@@ -44,6 +44,7 @@ namespace ConwaysGameOfLife
 					cellsDraw[y, x] = prosperous
 						? Convert.ToBoolean(random.Next(0, 2 + factor))
 						: !Convert.ToBoolean(random.Next(0, 2 + factor));
+
 				}
 			}
 		}
@@ -76,7 +77,6 @@ namespace ConwaysGameOfLife
 
 		private void GenerateNextGeneration()
 		{
-			populationSize = 0;
 
 			for (var y = 0; y < numberOfRows; y++)
 			{
@@ -121,7 +121,6 @@ namespace ConwaysGameOfLife
 					}
 				}
 			}
-
 			return aliveNeighbours;
 		}
 
@@ -211,7 +210,7 @@ namespace ConwaysGameOfLife
 			DrawCurrentGeneration();
 			DrawGUI();
 
-			Thread.Sleep(200);
+			Thread.Sleep(2000);
 		}
 
 		public void Run()
@@ -226,7 +225,7 @@ namespace ConwaysGameOfLife
 				DrawCurrentGeneration();
 				DrawGUI();
 
-				Thread.Sleep(200);
+				Thread.Sleep(2000);
 			}
 		}
 	}
