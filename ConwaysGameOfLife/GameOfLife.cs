@@ -44,7 +44,6 @@ namespace ConwaysGameOfLife
 					cellsDraw[y, x] = prosperous
 						? Convert.ToBoolean(random.Next(0, 2 + factor))
 						: !Convert.ToBoolean(random.Next(0, 2 + factor));
-
 				}
 			}
 		}
@@ -77,7 +76,6 @@ namespace ConwaysGameOfLife
 
 		private void GenerateNextGeneration()
 		{
-
 			for (var y = 0; y < numberOfRows; y++)
 			{
 				for (var x = 0; x < numberOfCols; x++)
