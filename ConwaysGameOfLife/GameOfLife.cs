@@ -6,10 +6,11 @@ namespace ConwaysGameOfLife
 {
 	internal class GameOfLife
 	{
-		private readonly bool[,] cellsA;
-		private readonly bool[,] cellsB;
-		private bool[,] cellsDraw;
-		private bool[,] cellsUpdate;
+		private readonly Cells cellsA;
+		private readonly Cells cellsB;
+
+		private Cells cellsDraw;
+		private Cells cellsUpdate;
 
 		private int generation = 0;
 		private readonly int populationSize = 0;
@@ -27,43 +28,32 @@ namespace ConwaysGameOfLife
 		public GameOfLife()
 		{
 			numberOfRows = numberOfCols = size;
-			cellsA = new bool[numberOfRows, numberOfCols];
-			cellsB = new bool[numberOfRows, numberOfCols];
+			cellsA = new Cells(numberOfRows, numberOfCols);
+			cellsB = new Cells(numberOfRows, numberOfCols);
 			cellsDraw = cellsA;
 			cellsUpdate = cellsB;
 		}
 
-		private void GenerateRandomSeed()
+		private static void GenerateRandomSeed(Cells cells, bool prosperous, int factor)
 		{
 			var random = new Random();
 
-			for (var y = 0; y < numberOfRows; y++)
+			for (var y = 0; y < cells.Rows; y++)
 			{
-				for (var x = 0; x < numberOfCols; x++)
+				for (var x = 0; x < cells.Cols; x++)
 				{
-					cellsDraw[y, x] = prosperous
+					var value = prosperous
 						? Convert.ToBoolean(random.Next(0, 2 + factor))
 						: !Convert.ToBoolean(random.Next(0, 2 + factor));
+
+					cells.SetValue(x, y, value);
 				}
 			}
 		}
 
 		private void DrawCurrentGeneration()
 		{
-			var blackSquare = "\u25A0"; // Alive cell
-
-			for (var y = 0; y < numberOfRows; y++)
-			{
-				for (var x = 0; x < numberOfCols; x++)
-				{
-					if (x == 0)
-					{
-						Console.WriteLine();
-					}
-					var draw = this.cellsDraw[y, x] ? blackSquare + " " : "  ";
-					Console.Write(draw);
-				}
-			}
+			cellsDraw.DrawConsole();
 		}
 
 		private void DrawGUI()
@@ -76,50 +66,13 @@ namespace ConwaysGameOfLife
 
 		private void GenerateNextGeneration()
 		{
-			for (var y = 0; y < numberOfRows; y++)
-			{
-				for (var x = 0; x < numberOfCols; x++)
-				{
-					var aliveNeighbours = GetAliveNeighbours(cellsDraw, y, x);
-					var checkNeighbours = (aliveNeighbours == 2) || (aliveNeighbours == 3);
-					var cellAlive = cellsDraw[y, x];
-
-					cellsUpdate[y, x] = (cellAlive && checkNeighbours) || (!cellAlive && (aliveNeighbours == 3));
-				}
-			}
+			cellsUpdate.Update(cellsDraw);
 
 			var temp = cellsDraw;
 			cellsDraw = cellsUpdate;
 			cellsUpdate = temp;
 
 			generation++;
-		}
-
-		private int GetAliveNeighbours(bool[,] cells, int cellY, int cellX)
-		{
-			var aliveNeighbours = 0;
-
-			for (var y = cellY - 1; y < cellY + 2; y++)
-			{
-				var validRow = (y >= 0) && (y <= (numberOfRows - 1));
-
-				if (!validRow)
-				{
-					continue;
-				}
-
-				for (var x = cellX - 1; x < cellX + 2; x++)
-				{
-					var validCol = (x >= 0) && (x <= (numberOfCols - 1));
-					var thisCell = (y == cellY) && (x == cellX);
-
-					if (validCol && !thisCell && cells[y, x])
-					{
-						aliveNeighbours++;
-					}
-				}
-			}
-			return aliveNeighbours;
 		}
 
 		private void RemoveConsoleFlicker()
@@ -132,7 +85,7 @@ namespace ConwaysGameOfLife
 		private void LoadState()
 		{
 			var rows = File.ReadAllLines(path);
-			var cellsPreset = new bool[rows.Length, rows[0].Length];
+			var cellsPreset = new Cells(rows.Length, rows[0].Length);
 			var y = 0;
 
 			foreach (var row in rows)
@@ -140,25 +93,29 @@ namespace ConwaysGameOfLife
 				var x = 0;
 				foreach (var col in row)
 				{
-					cellsPreset[y, x] = col == '1';
+					cellsPreset.SetValue(x, y, col == '1');
 					x++;
 				}
 				y++;
 			}
 
-			cellsDraw = (rows.Length == numberOfRows) && (rows[0].Length == numberOfCols) ? cellsPreset : Translate(cellsPreset);
+			var val = (rows.Length == numberOfRows) && (rows[0].Length == numberOfCols);
+
+			cellsDraw = val
+				? cellsPreset
+				: Translate(cellsDraw, cellsPreset);
 		}
 
-		private bool[,] Translate(bool[,] cells)
+		private Cells Translate(Cells canvas, Cells toPaste) //bool[,] cells)
 		{
-			for (var y = 0; y < cells.GetLength(0); y++)
+			for (var y = 0; y < toPaste.Rows; y++)
 			{
-				for (var x = 0; x < cells.GetLength(1); x++)
+				for (var x = 0; x < toPaste.Cols; x++)
 				{
-					cellsDraw[y, x] = cells[y, x];
+					canvas.SetValue(x, y, toPaste.GetValue(x, y));
 				}
 			}
-			return cellsDraw;
+			return canvas;
 		}
 
 		public void HandleUserInput()
@@ -202,13 +159,13 @@ namespace ConwaysGameOfLife
 			}
 			else
 			{
-				GenerateRandomSeed();
+				GenerateRandomSeed(cellsDraw, prosperous, factor);
 			}
 
 			DrawCurrentGeneration();
 			DrawGUI();
 
-			Thread.Sleep(2000);
+			Thread.Sleep(200);
 		}
 
 		public void Run()
@@ -223,7 +180,7 @@ namespace ConwaysGameOfLife
 				DrawCurrentGeneration();
 				DrawGUI();
 
-				Thread.Sleep(2000);
+				Thread.Sleep(200);
 			}
 		}
 	}
