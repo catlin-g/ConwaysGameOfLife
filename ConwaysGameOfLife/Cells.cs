@@ -23,7 +23,9 @@ namespace ConwaysGameOfLife
 			cells = new bool[numberOfRows, numberOfCols];
 		}
 
+
 		private readonly bool[,] cells;
+		private int numOfCellsAlive;
 
 		public void SetValue(int x, int y, bool value)
 		{
@@ -35,11 +37,19 @@ namespace ConwaysGameOfLife
 			return cells[y, x];
 		}
 
+		public int GetPopulationCount()
+		{
+
+			return numOfCellsAlive;
+		}
+
 		public int Rows => cells.GetLength(0);
 		public int Cols => cells.GetLength(1);
 
 		public void Update(Cells currentState)
 		{
+			numOfCellsAlive = 0;
+
 			for (var y = 0; y < Rows; y++)
 			{
 				for (var x = 0; x < Cols; x++)
@@ -50,6 +60,11 @@ namespace ConwaysGameOfLife
 
 					var isAlive = (cellAlive && checkNeighbours) || (!cellAlive && (aliveNeighbours == 3));
 					SetValue(x, y, isAlive);
+
+					if(isAlive)
+					{
+						numOfCellsAlive++;
+					}
 				}
 			}
 		}
@@ -78,6 +93,7 @@ namespace ConwaysGameOfLife
 					}
 				}
 			}
+
 			return aliveNeighbours;
 		}
 

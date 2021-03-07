@@ -12,9 +12,6 @@ namespace ConwaysGameOfLife
 		private Cells cellsDraw;
 		private Cells cellsUpdate;
 
-		private int generation = 0;
-		private readonly int populationSize = 0;
-
 		private readonly int size = 20;
 		private readonly int numberOfRows;
 		private readonly int numberOfCols;
@@ -25,6 +22,8 @@ namespace ConwaysGameOfLife
 		private bool isPreset = false;
 		private string path = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\";
 
+		private Statistics statistics;
+
 		public GameOfLife()
 		{
 			numberOfRows = numberOfCols = size;
@@ -32,6 +31,7 @@ namespace ConwaysGameOfLife
 			cellsB = new Cells(numberOfRows, numberOfCols);
 			cellsDraw = cellsA;
 			cellsUpdate = cellsB;
+			statistics = new Statistics();
 		}
 
 		private static void GenerateRandomSeed(Cells cells, bool prosperous, int factor)
@@ -58,10 +58,7 @@ namespace ConwaysGameOfLife
 
 		private void DrawGUI()
 		{
-			Console.WriteLine();
-			Console.WriteLine();
-			Console.WriteLine("Generation: " + generation);
-			Console.WriteLine("Population: " + populationSize);
+			statistics.Print();
 		}
 
 		private void GenerateNextGeneration()
@@ -72,7 +69,9 @@ namespace ConwaysGameOfLife
 			cellsDraw = cellsUpdate;
 			cellsUpdate = temp;
 
-			generation++;
+
+			statistics.PopulationSize = cellsDraw.GetPopulationCount();
+			statistics.Generation++;
 		}
 
 		private void RemoveConsoleFlicker()
@@ -165,7 +164,7 @@ namespace ConwaysGameOfLife
 			DrawCurrentGeneration();
 			DrawGUI();
 
-			Thread.Sleep(200);
+			Thread.Sleep(500);
 		}
 
 		public void Run()
@@ -180,7 +179,7 @@ namespace ConwaysGameOfLife
 				DrawCurrentGeneration();
 				DrawGUI();
 
-				Thread.Sleep(200);
+				Thread.Sleep(500);
 			}
 		}
 	}
