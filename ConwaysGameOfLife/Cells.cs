@@ -23,7 +23,6 @@ namespace ConwaysGameOfLife
 			cells = new bool[numberOfRows, numberOfCols];
 		}
 
-
 		private readonly bool[,] cells;
 		private int numOfCellsAlive;
 

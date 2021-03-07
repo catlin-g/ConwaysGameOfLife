@@ -15,7 +15,7 @@ namespace ConwaysGameOfLife
 		{
 			Console.WriteLine();
 			Console.WriteLine("Generation: " + Generation);
-			Console.WriteLine("Population Size: " + PopulationSize);
+			Console.WriteLine("Population Size: " + PopulationSize + "     ");
 		}
 	}
 }
