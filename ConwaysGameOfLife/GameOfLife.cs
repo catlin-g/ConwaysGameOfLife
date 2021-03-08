@@ -69,7 +69,7 @@ namespace ConwaysGameOfLife
 			cellsDraw = cellsUpdate;
 			cellsUpdate = temp;
 
-
+			statistics.Change =  cellsDraw.GetPopulationCount() - cellsUpdate.GetPopulationCount();
 			statistics.PopulationSize = cellsDraw.GetPopulationCount();
 			statistics.Generation++;
 		}
@@ -164,7 +164,7 @@ namespace ConwaysGameOfLife
 			DrawCurrentGeneration();
 			DrawGUI();
 
-			Thread.Sleep(500);
+			Thread.Sleep(2000);
 		}
 
 		public void Run()
@@ -179,7 +179,7 @@ namespace ConwaysGameOfLife
 				DrawCurrentGeneration();
 				DrawGUI();
 
-				Thread.Sleep(500);
+				Thread.Sleep(2000);
 			}
 		}
 	}
