@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConwaysGameOfLife
 {
@@ -18,22 +14,25 @@ namespace ConwaysGameOfLife
 
 	class Cells : IConsoleDrawable
 	{
-		public Cells(int numberOfRows, int numberOfCols)
-		{
-			cells = new bool[numberOfRows, numberOfCols];
-		}
-
 		private readonly bool[,] cells;
 		private int numOfCellsAlive;
+		public char AliveCellSymbol = '\u25A0';
+		public int Height => cells.GetLength(0);
+		public int Length => cells.GetLength(1);
+
+		public Cells(int length, int height)
+		{
+			cells = new bool[length, height];
+		}
 
 		public void SetValue(int x, int y, bool value)
 		{
-			cells[y, x] = value;
+			cells[x, y] = value;
 		}
 
 		public bool GetValue(int x, int y)
 		{
-			return cells[y, x];
+			return cells[x, y];
 		}
 
 		public int GetPopulationCount()
@@ -42,16 +41,13 @@ namespace ConwaysGameOfLife
 			return numOfCellsAlive;
 		}
 
-		public int Rows => cells.GetLength(0);
-		public int Cols => cells.GetLength(1);
-
 		public void Update(Cells currentState)
 		{
 			numOfCellsAlive = 0;
 
-			for (var y = 0; y < Rows; y++)
+			for (var y = 0; y < Height; y++)
 			{
-				for (var x = 0; x < Cols; x++)
+				for (var x = 0; x < Length; x++)
 				{
 					var aliveNeighbours = GetAliveNeighbours(x, y, currentState);
 					var checkNeighbours = (aliveNeighbours == 2) || (aliveNeighbours == 3);
@@ -68,41 +64,38 @@ namespace ConwaysGameOfLife
 			}
 		}
 
-		private static int GetAliveNeighbours(int cellY, int cellX, Cells currentState)
+		private static int GetAliveNeighbours(int cellX, int cellY, Cells currentState)
 		{
 			var aliveNeighbours = 0;
 
 			for (var y = cellY - 1; y < cellY + 2; y++)
 			{
-				var validRow = (y >= 0) && (y <= (currentState.Rows - 1));
+				var validY = (y >= 0) && (y <= (currentState.Height - 1));
 
-				if (!validRow)
+				if (!validY)
 				{
 					continue;
 				}
 
 				for (var x = cellX - 1; x < cellX + 2; x++)
 				{
-					var validCol = (x >= 0) && (x <= (currentState.Cols - 1));
+					var validX = (x >= 0) && (x <= (currentState.Length - 1));
 					var thisCell = (y == cellY) && (x == cellX);
 
-					if (validCol && !thisCell && currentState.GetValue(x, y))
+					if (validX && !thisCell && currentState.GetValue(x, y))
 					{
 						aliveNeighbours++;
 					}
 				}
 			}
-
 			return aliveNeighbours;
 		}
 
-		public char AliveCellSymbol = '\u25A0';
-
 		public void DrawConsole()
 		{
-			for (var y = 0; y < Rows; y++)
+			for (var y = 0; y < Height; y++)
 			{
-				for (var x = 0; x < Cols; x++)
+				for (var x = 0; x < Length; x++)
 				{
 					if (x == 0)
 					{

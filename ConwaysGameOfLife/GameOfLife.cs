@@ -13,8 +13,8 @@ namespace ConwaysGameOfLife
 		private Cells cellsUpdate;
 
 		private readonly int size = 20;
-		private readonly int numberOfRows;
-		private readonly int numberOfCols;
+		private readonly int length;
+		private readonly int height;
 
 		private readonly int factor = 2;
 		private readonly bool prosperous = false;
@@ -26,9 +26,9 @@ namespace ConwaysGameOfLife
 
 		public GameOfLife()
 		{
-			numberOfRows = numberOfCols = size;
-			cellsA = new Cells(numberOfRows, numberOfCols);
-			cellsB = new Cells(numberOfRows, numberOfCols);
+			length = height = size;
+			cellsA = new Cells(length, height);
+			cellsB = new Cells(length, height);
 			cellsDraw = cellsA;
 			cellsUpdate = cellsB;
 			statistics = new Statistics();
@@ -38,9 +38,9 @@ namespace ConwaysGameOfLife
 		{
 			var random = new Random();
 
-			for (var y = 0; y < cells.Rows; y++)
+			for (var y = 0; y < cells.Height; y++)
 			{
-				for (var x = 0; x < cells.Cols; x++)
+				for (var x = 0; x < cells.Length; x++)
 				{
 					var value = prosperous
 						? Convert.ToBoolean(random.Next(0, 2 + factor))
@@ -80,36 +80,35 @@ namespace ConwaysGameOfLife
 			Console.SetCursorPosition(0, 0);
 		}
 
-		// Currently, the file has to contain a minimum of 1 cells, and cannot be greater than what the board is initialised to.
 		private void LoadState()
 		{
-			var rows = File.ReadAllLines(path);
-			var cellsPreset = new Cells(rows.Length, rows[0].Length);
+			var totalLines = File.ReadAllLines(path);
+			var cellsPreset = new Cells(totalLines.Length, totalLines[0].Length);
 			var y = 0;
 
-			foreach (var row in rows)
+			foreach (var line in totalLines)
 			{
 				var x = 0;
-				foreach (var col in row)
+				foreach (var character in line)
 				{
-					cellsPreset.SetValue(x, y, col == '1');
+					cellsPreset.SetValue(x, y, character == '1');
 					x++;
 				}
 				y++;
 			}
 
-			var val = (rows.Length == numberOfRows) && (rows[0].Length == numberOfCols);
+			var val = (totalLines[0].Length == length) && (totalLines.Length == height);
 
 			cellsDraw = val
 				? cellsPreset
 				: Translate(cellsDraw, cellsPreset);
 		}
 
-		private Cells Translate(Cells canvas, Cells toPaste) //bool[,] cells)
+		private Cells Translate(Cells canvas, Cells toPaste)
 		{
-			for (var y = 0; y < toPaste.Rows; y++)
+			for (var y = 0; y < toPaste.Height; y++)
 			{
-				for (var x = 0; x < toPaste.Cols; x++)
+				for (var x = 0; x < toPaste.Length; x++)
 				{
 					canvas.SetValue(x, y, toPaste.GetValue(x, y));
 				}
@@ -164,7 +163,7 @@ namespace ConwaysGameOfLife
 			DrawCurrentGeneration();
 			DrawGUI();
 
-			Thread.Sleep(2000);
+			Thread.Sleep(200);
 		}
 
 		public void Run()
@@ -179,7 +178,7 @@ namespace ConwaysGameOfLife
 				DrawCurrentGeneration();
 				DrawGUI();
 
-				Thread.Sleep(2000);
+				Thread.Sleep(200);
 			}
 		}
 	}
