@@ -17,22 +17,22 @@ namespace ConwaysGameOfLife
 		private readonly bool[,] cells;
 		private int numOfCellsAlive;
 		public char AliveCellSymbol = '\u25A0';
+		public int Width => cells.GetLength(1);
 		public int Height => cells.GetLength(0);
-		public int Length => cells.GetLength(1);
 
-		public Cells(int length, int height)
+		public Cells(int width, int height)
 		{
-			cells = new bool[length, height];
+			cells = new bool[height, width];
 		}
 
 		public void SetValue(int x, int y, bool value)
 		{
-			cells[x, y] = value;
+			cells[y, x] = value;
 		}
 
 		public bool GetValue(int x, int y)
 		{
-			return cells[x, y];
+			return cells[y, x];
 		}
 
 		public int GetPopulationCount()
@@ -47,7 +47,7 @@ namespace ConwaysGameOfLife
 
 			for (var y = 0; y < Height; y++)
 			{
-				for (var x = 0; x < Length; x++)
+				for (var x = 0; x < Width; x++)
 				{
 					var aliveNeighbours = GetAliveNeighbours(x, y, currentState);
 					var checkNeighbours = (aliveNeighbours == 2) || (aliveNeighbours == 3);
@@ -79,7 +79,7 @@ namespace ConwaysGameOfLife
 
 				for (var x = cellX - 1; x < cellX + 2; x++)
 				{
-					var validX = (x >= 0) && (x <= (currentState.Length - 1));
+					var validX = (x >= 0) && (x <= (currentState.Width - 1));
 					var thisCell = (y == cellY) && (x == cellX);
 
 					if (validX && !thisCell && currentState.GetValue(x, y))
@@ -91,11 +91,36 @@ namespace ConwaysGameOfLife
 			return aliveNeighbours;
 		}
 
+		private static int GetAliveNeighbours1(int cellX, int cellY, Cells currentState)
+		{
+			var aliveNeighbours = 0;
+
+			for (var y = MathMod((cellY - 1), 9); y < MathMod((cellY + 2), 9); y++)
+			{
+
+				for (var x = MathMod((cellX - 1), 9); x < MathMod((cellX + 2), 9); x++)
+				{
+					var thisCell = (y == cellY) && (x == cellX);
+
+					if (!thisCell && currentState.GetValue(x, y))
+					{
+						aliveNeighbours++;
+					}
+				}
+			}
+			return aliveNeighbours;
+		}
+
+		static int MathMod(int a, int b)
+		{
+			return (Math.Abs(a * b) + a) % b;
+		}
+
 		public void DrawConsole()
 		{
 			for (var y = 0; y < Height; y++)
 			{
-				for (var x = 0; x < Length; x++)
+				for (var x = 0; x < Width; x++)
 				{
 					if (x == 0)
 					{

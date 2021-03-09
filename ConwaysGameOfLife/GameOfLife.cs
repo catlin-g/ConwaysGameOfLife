@@ -13,8 +13,8 @@ namespace ConwaysGameOfLife
 		private Cells cellsUpdate;
 
 		private readonly int size = 20;
-		private readonly int length;
-		private readonly int height;
+		private readonly int width = 26;
+		private readonly int height = 10;
 
 		private readonly int factor = 2;
 		private readonly bool prosperous = false;
@@ -22,13 +22,13 @@ namespace ConwaysGameOfLife
 		private bool isPreset = false;
 		private string path = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\";
 
-		private Statistics statistics;
+		private readonly Statistics statistics;
 
 		public GameOfLife()
 		{
-			length = height = size;
-			cellsA = new Cells(length, height);
-			cellsB = new Cells(length, height);
+			//width = height = size;
+			cellsA = new Cells(width, height);
+			cellsB = new Cells(width, height);
 			cellsDraw = cellsA;
 			cellsUpdate = cellsB;
 			statistics = new Statistics();
@@ -40,7 +40,7 @@ namespace ConwaysGameOfLife
 
 			for (var y = 0; y < cells.Height; y++)
 			{
-				for (var x = 0; x < cells.Length; x++)
+				for (var x = 0; x < cells.Width; x++)
 				{
 					var value = prosperous
 						? Convert.ToBoolean(random.Next(0, 2 + factor))
@@ -69,7 +69,7 @@ namespace ConwaysGameOfLife
 			cellsDraw = cellsUpdate;
 			cellsUpdate = temp;
 
-			statistics.Change =  cellsDraw.GetPopulationCount() - cellsUpdate.GetPopulationCount();
+			statistics.Change = cellsDraw.GetPopulationCount() - cellsUpdate.GetPopulationCount();
 			statistics.PopulationSize = cellsDraw.GetPopulationCount();
 			statistics.Generation++;
 		}
@@ -97,7 +97,7 @@ namespace ConwaysGameOfLife
 				y++;
 			}
 
-			var val = (totalLines[0].Length == length) && (totalLines.Length == height);
+			var val = (totalLines[0].Length == width) && (totalLines.Length == height);
 
 			cellsDraw = val
 				? cellsPreset
@@ -108,7 +108,7 @@ namespace ConwaysGameOfLife
 		{
 			for (var y = 0; y < toPaste.Height; y++)
 			{
-				for (var x = 0; x < toPaste.Length; x++)
+				for (var x = 0; x < toPaste.Width; x++)
 				{
 					canvas.SetValue(x, y, toPaste.GetValue(x, y));
 				}
