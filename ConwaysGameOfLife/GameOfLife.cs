@@ -12,12 +12,11 @@ namespace ConwaysGameOfLife
 		private Cells cellsDraw;
 		private Cells cellsUpdate;
 
-		private readonly int size = 20;
-		private readonly int width = 26;
-		private readonly int height = 10;
+		//private readonly int size = 9;
+		private readonly int width = 20;
+		private readonly int height = 8;
 
-		private readonly int factor = 2;
-		private readonly bool prosperous = false;
+		private readonly float prosperous = 0.65f;
 
 		private bool isPreset = false;
 		private string path = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\";
@@ -34,17 +33,20 @@ namespace ConwaysGameOfLife
 			statistics = new Statistics();
 		}
 
-		private static void GenerateRandomSeed(Cells cells, bool prosperous, int factor)
-		{
-			var random = new Random();
+		private static Random random = new Random();
 
+		private static bool ShouldBeAlive(float changeOfBeingAlive)
+		{
+			return random.NextDouble() < changeOfBeingAlive;
+		}
+
+		private void GenerateRandomSeed(Cells cells, float prosperous)
+		{
 			for (var y = 0; y < cells.Height; y++)
 			{
 				for (var x = 0; x < cells.Width; x++)
 				{
-					var value = prosperous
-						? Convert.ToBoolean(random.Next(0, 2 + factor))
-						: !Convert.ToBoolean(random.Next(0, 2 + factor));
+					var value = ShouldBeAlive(prosperous);
 
 					cells.SetValue(x, y, value);
 				}
@@ -157,7 +159,7 @@ namespace ConwaysGameOfLife
 			}
 			else
 			{
-				GenerateRandomSeed(cellsDraw, prosperous, factor);
+				GenerateRandomSeed(cellsDraw, prosperous);
 			}
 
 			DrawCurrentGeneration();

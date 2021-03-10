@@ -37,7 +37,6 @@ namespace ConwaysGameOfLife
 
 		public int GetPopulationCount()
 		{
-
 			return numOfCellsAlive;
 		}
 
@@ -56,14 +55,13 @@ namespace ConwaysGameOfLife
 					var isAlive = (cellAlive && checkNeighbours) || (!cellAlive && (aliveNeighbours == 3));
 					SetValue(x, y, isAlive);
 
-					if(isAlive)
+					if (isAlive)
 					{
 						numOfCellsAlive++;
 					}
 				}
 			}
 		}
-
 		private static int GetAliveNeighbours(int cellX, int cellY, Cells currentState)
 		{
 			var aliveNeighbours = 0;
@@ -91,18 +89,17 @@ namespace ConwaysGameOfLife
 			return aliveNeighbours;
 		}
 
-		private static int GetAliveNeighbours1(int cellX, int cellY, Cells currentState)
+		private static int GetAliveNeighboursWrap(int cellX, int cellY, Cells currentState)
 		{
 			var aliveNeighbours = 0;
 
-			for (var y = MathMod((cellY - 1), 9); y < MathMod((cellY + 2), 9); y++)
+			for (var y = cellY - 1; y < cellY + 2; y++)
 			{
-
-				for (var x = MathMod((cellX - 1), 9); x < MathMod((cellX + 2), 9); x++)
+				for (var x = cellX - 1; x < cellX + 2; x++)
 				{
 					var thisCell = (y == cellY) && (x == cellX);
 
-					if (!thisCell && currentState.GetValue(x, y))
+					if (!thisCell && (currentState.GetValue(MathMod(x, currentState.Width), MathMod(y, currentState.Height))))
 					{
 						aliveNeighbours++;
 					}
@@ -111,7 +108,27 @@ namespace ConwaysGameOfLife
 			return aliveNeighbours;
 		}
 
-		static int MathMod(int a, int b)
+		private static int GetAliveNeighboursBuffer(int cellX, int cellY, Cells currentState)
+		{
+			var aliveNeighbours = 0;
+			var buffer = 5;
+
+			for (var y = cellY - 1; y < cellY + 2; y++)
+			{
+				for (var x = cellX - 1; x < cellX + 2; x++)
+				{
+					var thisCell = (y == cellY) && (x == cellX);
+
+					if (!thisCell)
+					{
+						aliveNeighbours++;
+					}
+				}
+			}
+			return aliveNeighbours;
+		}
+
+		private static int MathMod(int a, int b)
 		{
 			return (Math.Abs(a * b) + a) % b;
 		}
