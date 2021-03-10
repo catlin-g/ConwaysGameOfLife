@@ -14,7 +14,7 @@ namespace ConwaysGameOfLife
 
 		//private readonly int size = 9;
 		private readonly int width = 20;
-		private readonly int height = 8;
+		private readonly int height = 20;
 
 		private readonly float prosperous = 0.65f;
 

@@ -17,12 +17,14 @@ namespace ConwaysGameOfLife
 		private readonly bool[,] cells;
 		private int numOfCellsAlive;
 		public char AliveCellSymbol = '\u25A0';
+		//public int buffer = 5;
 		public int Width => cells.GetLength(1);
 		public int Height => cells.GetLength(0);
 
 		public Cells(int width, int height)
 		{
 			cells = new bool[height, width];
+			//cells = new bool[height + buffer, width + buffer];
 		}
 
 		public void SetValue(int x, int y, bool value)
@@ -108,30 +110,26 @@ namespace ConwaysGameOfLife
 			return aliveNeighbours;
 		}
 
-		private static int GetAliveNeighboursBuffer(int cellX, int cellY, Cells currentState)
-		{
-			var aliveNeighbours = 0;
-			var buffer = 5;
-
-			for (var y = cellY - 1; y < cellY + 2; y++)
-			{
-				for (var x = cellX - 1; x < cellX + 2; x++)
-				{
-					var thisCell = (y == cellY) && (x == cellX);
-
-					if (!thisCell)
-					{
-						aliveNeighbours++;
-					}
-				}
-			}
-			return aliveNeighbours;
-		}
-
 		private static int MathMod(int a, int b)
 		{
 			return (Math.Abs(a * b) + a) % b;
 		}
+
+		/*public void DrawConsole()
+		{
+			for (var y = 0 + buffer; y < Height - buffer; y++)
+			{
+				for (var x = 0 + buffer; x < Width - buffer; x++)
+				{
+					if (x == buffer)
+					{
+						Console.WriteLine();
+					}
+					var draw = GetValue(x, y) ? AliveCellSymbol + " " : " .";
+					Console.Write(draw);
+				}
+			}
+		}*/
 
 		public void DrawConsole()
 		{
@@ -143,7 +141,7 @@ namespace ConwaysGameOfLife
 					{
 						Console.WriteLine();
 					}
-					var draw = GetValue(x, y) ? AliveCellSymbol + " " : "  ";
+					var draw = GetValue(x, y) ? AliveCellSymbol + " " : " .";
 					Console.Write(draw);
 				}
 			}
