@@ -1,46 +1,39 @@
 ﻿using System;
+using System.Drawing;
 
 namespace ConwaysGameOfLife
 {
-	interface IConsoleDrawable
+	class Cells
 	{
-		void DrawConsole();
-	}
-
-	//interface IGuiDrawable
-	//{
-	//	void Draw();
-	//}
-
-	class Cells : IConsoleDrawable
-	{
+		public bool Wrap;
 		private readonly bool[,] cells;
 		private int numOfCellsAlive;
 		public char AliveCellSymbol = '\u25A0';
-		//public int buffer = 5;
 		public int Width => cells.GetLength(1);
 		public int Height => cells.GetLength(0);
 
-		public Cells(int width, int height)
+		int buffer;
+
+		public Cells(int width, int height, int buffer = 0)
 		{
-			cells = new bool[height, width];
-			//cells = new bool[height + buffer, width + buffer];
+			this.buffer = buffer;
+			cells = new bool[height + (buffer * 2), width + (buffer * 2)];
 		}
 
 		public void SetValue(int x, int y, bool value)
-		{
-			cells[y, x] = value;
-		}
+			=> cells[GetCoordinate(y, Height), GetCoordinate(x, Width)] = value;
 
 		public bool GetValue(int x, int y)
-		{
-			return cells[y, x];
-		}
+			=> cells[GetCoordinate(y, Height), GetCoordinate(x, Width)];
+
+		private int GetCoordinate(int dividend, int divisor)
+			=> Wrap ? ModuloCore(dividend, divisor) : dividend;
+
+		private static int ModuloCore(int dividend, int divisor)
+			=> ((dividend % divisor) + divisor) % divisor;
 
 		public int GetPopulationCount()
-		{
-			return numOfCellsAlive;
-		}
+			=> numOfCellsAlive;
 
 		public void Update(Cells currentState)
 		{
@@ -115,29 +108,13 @@ namespace ConwaysGameOfLife
 			return (Math.Abs(a * b) + a) % b;
 		}
 
-		/*public void DrawConsole()
-		{
-			for (var y = 0 + buffer; y < Height - buffer; y++)
-			{
-				for (var x = 0 + buffer; x < Width - buffer; x++)
-				{
-					if (x == buffer)
-					{
-						Console.WriteLine();
-					}
-					var draw = GetValue(x, y) ? AliveCellSymbol + " " : " .";
-					Console.Write(draw);
-				}
-			}
-		}*/
-
 		public void DrawConsole()
 		{
-			for (var y = 0; y < Height; y++)
+			for (var y = buffer; y < Height - buffer; y++)
 			{
-				for (var x = 0; x < Width; x++)
+				for (var x = buffer; x < Width - buffer; x++)
 				{
-					if (x == 0)
+					if (x == buffer)
 					{
 						Console.WriteLine();
 					}
