@@ -85,26 +85,40 @@ namespace ConwaysGameOfLife
 
 		private void LoadState()
 		{
-			var totalLines = File.ReadAllLines(path);
-			var cellsPreset = new Cells(totalLines.Length, totalLines[0].Length, 0);
-			var y = 0;
-
-			foreach (var line in totalLines)
+			if (File.Exists(path))
 			{
-				var x = 0;
-				foreach (var character in line)
+				var totalLines = File.ReadAllLines(path);
+				if (totalLines.Length > 0)
 				{
-					cellsPreset.SetValue(x, y, character == '1');
-					x++;
+					var cellsPreset = new Cells(totalLines.Length, totalLines[0].Length, 0);
+					var y = 0;
+
+					foreach (var line in totalLines)
+					{
+						var x = 0;
+						foreach (var character in line)
+						{
+							cellsPreset.SetValue(x, y, character == '1');
+							x++;
+						}
+						y++;
+					}
+
+					var val = (totalLines[0].Length == width) && (totalLines.Length == height);
+
+					cellsDraw = val
+						? cellsPreset
+						: Translate(cellsDraw, cellsPreset);
 				}
-				y++;
+				else
+				{
+					// print error message
+				}
 			}
-
-			var val = (totalLines[0].Length == width) && (totalLines.Length == height);
-
-			cellsDraw = val
-				? cellsPreset
-				: Translate(cellsDraw, cellsPreset);
+			else
+			{
+				// print error message
+			}
 		}
 
 		private Cells Translate(Cells canvas, Cells toPaste)

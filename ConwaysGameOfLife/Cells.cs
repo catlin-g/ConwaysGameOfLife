@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace ConwaysGameOfLife
@@ -14,17 +15,48 @@ namespace ConwaysGameOfLife
 
 		int buffer;
 
-		public Cells(int width, int height, int buffer = 0)
+		public Cells(int width, int height, int buffer)
 		{
+			if (width == 0)
+			{
+				throw new ArgumentException("width cannot be 0", nameof(width));
+			}
+			if (height == 0)
+			{
+				throw new ArgumentException("height cannot be 0", nameof(height));
+			}
+
 			this.buffer = buffer;
 			cells = new bool[height + (buffer * 2), width + (buffer * 2)];
 		}
 
 		public void SetValue(int x, int y, bool value)
-			=> cells[GetCoordinate(y, Height), GetCoordinate(x, Width)] = value;
+		{
+			if (x < 0 || x >= Width)
+			{
+				throw new ArgumentException("width cannot be less than 0 or greater than the grid width");
+			}
+			if (y < 0 || y >= Height)
+			{
+				throw new ArgumentException("height cannot be less than 0 or greater than the grid height");
+			}
+
+			cells[GetCoordinate(y, Height), GetCoordinate(x, Width)] = value;
+		}
 
 		public bool GetValue(int x, int y)
-			=> cells[GetCoordinate(y, Height), GetCoordinate(x, Width)];
+		{
+			if (x < 0 || x >= Width)
+			{
+				throw new ArgumentException("width cannot be less than 0 or greater than the grid width");
+			}
+			if (y < 0 || y >= Height)
+			{
+				throw new ArgumentException("height cannot be less than 0 or greater than the grid height");
+			}
+
+			return cells[GetCoordinate(y, Height), GetCoordinate(x, Width)];
+		}
 
 		private int GetCoordinate(int dividend, int divisor)
 			=> Wrap ? ModuloCore(dividend, divisor) : dividend;
@@ -82,30 +114,6 @@ namespace ConwaysGameOfLife
 				}
 			}
 			return aliveNeighbours;
-		}
-
-		private static int GetAliveNeighboursWrap(int cellX, int cellY, Cells currentState)
-		{
-			var aliveNeighbours = 0;
-
-			for (var y = cellY - 1; y < cellY + 2; y++)
-			{
-				for (var x = cellX - 1; x < cellX + 2; x++)
-				{
-					var thisCell = (y == cellY) && (x == cellX);
-
-					if (!thisCell && (currentState.GetValue(MathMod(x, currentState.Width), MathMod(y, currentState.Height))))
-					{
-						aliveNeighbours++;
-					}
-				}
-			}
-			return aliveNeighbours;
-		}
-
-		private static int MathMod(int a, int b)
-		{
-			return (Math.Abs(a * b) + a) % b;
 		}
 
 		public void DrawConsole()
