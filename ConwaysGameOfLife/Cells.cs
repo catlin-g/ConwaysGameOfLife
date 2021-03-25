@@ -1,65 +1,64 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Drawing;
 
 namespace ConwaysGameOfLife
 {
 	class Cells
 	{
-		public bool Wrap;
 		private readonly bool[,] cells;
 		private int numOfCellsAlive;
 		public char AliveCellSymbol = '\u25A0';
 		public int Width => cells.GetLength(1);
 		public int Height => cells.GetLength(0);
 
-		int buffer;
+		public int buffer;
+		public bool Wrap;
 
-		public Cells(int width, int height, int buffer)
+		public Cells(int width, int height)
 		{
-			if (width == 0)
+			/*if (width == 0)
 			{
 				throw new ArgumentException("width cannot be 0", nameof(width));
 			}
 			if (height == 0)
 			{
 				throw new ArgumentException("height cannot be 0", nameof(height));
-			}
+			}*/
 
-			this.buffer = buffer;
-			cells = new bool[height + (buffer * 2), width + (buffer * 2)];
+			cells = new bool[height + buffer, width + buffer];
 		}
 
 		public void SetValue(int x, int y, bool value)
 		{
-			if (x < 0 || x >= Width)
+			/*if (x < 0 || x >= Width)
 			{
 				throw new ArgumentException("width cannot be less than 0 or greater than the grid width");
 			}
 			if (y < 0 || y >= Height)
 			{
 				throw new ArgumentException("height cannot be less than 0 or greater than the grid height");
-			}
+			}*/
 
 			cells[GetCoordinate(y, Height), GetCoordinate(x, Width)] = value;
 		}
 
 		public bool GetValue(int x, int y)
 		{
-			if (x < 0 || x >= Width)
+			/*if (x < 0 || x >= Width)
 			{
 				throw new ArgumentException("width cannot be less than 0 or greater than the grid width");
 			}
 			if (y < 0 || y >= Height)
 			{
 				throw new ArgumentException("height cannot be less than 0 or greater than the grid height");
-			}
+			}*/
 
 			return cells[GetCoordinate(y, Height), GetCoordinate(x, Width)];
 		}
 
 		private int GetCoordinate(int dividend, int divisor)
-			=> Wrap ? ModuloCore(dividend, divisor) : dividend;
+		{
+			return Wrap ? ModuloCore(dividend, divisor) : dividend;
+		}
 
 		private static int ModuloCore(int dividend, int divisor)
 			=> ((dividend % divisor) + divisor) % divisor;
@@ -95,9 +94,10 @@ namespace ConwaysGameOfLife
 
 			for (var y = cellY - 1; y < cellY + 2; y++)
 			{
+
 				var validY = (y >= 0) && (y <= (currentState.Height - 1));
 
-				if (!validY)
+				if (!validY && !currentState.Wrap)
 				{
 					continue;
 				}
@@ -105,9 +105,10 @@ namespace ConwaysGameOfLife
 				for (var x = cellX - 1; x < cellX + 2; x++)
 				{
 					var validX = (x >= 0) && (x <= (currentState.Width - 1));
+
 					var thisCell = (y == cellY) && (x == cellX);
 
-					if (validX && !thisCell && currentState.GetValue(x, y))
+					if ((validX || currentState.Wrap) && !thisCell && currentState.GetValue(x, y))
 					{
 						aliveNeighbours++;
 					}
@@ -123,6 +124,22 @@ namespace ConwaysGameOfLife
 				for (var x = buffer; x < Width - buffer; x++)
 				{
 					if (x == buffer)
+					{
+						Console.WriteLine();
+					}
+					var draw = GetValue(x, y) ? AliveCellSymbol + " " : " .";
+					Console.Write(draw);
+				}
+			}
+
+			Console.WriteLine();
+			Console.WriteLine("******************");
+
+			for (var y = 0; y < Height; y++)
+			{
+				for (var x = 0; x < Width; x++)
+				{
+					if (x == 0)
 					{
 						Console.WriteLine();
 					}

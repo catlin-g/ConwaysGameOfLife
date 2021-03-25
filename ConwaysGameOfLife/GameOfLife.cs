@@ -12,10 +12,8 @@ namespace ConwaysGameOfLife
 		private Cells cellsDraw;
 		private Cells cellsUpdate;
 
-		//private readonly int size = 9;
-		private readonly int width = 40;
-		private readonly int height = 20;
-		private bool useBuffer;
+		private readonly int width = 10;
+		private readonly int height = 10;
 
 		private readonly float prosperous = 0.65f;
 
@@ -24,11 +22,12 @@ namespace ConwaysGameOfLife
 
 		private readonly Statistics statistics;
 
+		private bool useBuffer;
+
 		public GameOfLife()
 		{
-			//width = height = size;
-			cellsA = new Cells(width, height, useBuffer ? 3 : 0);
-			cellsB = new Cells(width, height, useBuffer ? 3 : 0);
+			cellsA = new Cells(width, height);
+			cellsB = new Cells(width, height);
 			cellsDraw = cellsA;
 			cellsUpdate = cellsB;
 			statistics = new Statistics();
@@ -90,7 +89,7 @@ namespace ConwaysGameOfLife
 				var totalLines = File.ReadAllLines(path);
 				if (totalLines.Length > 0)
 				{
-					var cellsPreset = new Cells(totalLines.Length, totalLines[0].Length, 0);
+					var cellsPreset = new Cells(totalLines.Length, totalLines[0].Length);
 					var y = 0;
 
 					foreach (var line in totalLines)
@@ -137,22 +136,18 @@ namespace ConwaysGameOfLife
 		{
 			ConsoleKeyInfo cki;
 
-			Console.WriteLine("Press 'R' to generate a random seed or 'P' to select a preset, or 'B' for a buffer, or 'H' for help");
-			Console.WriteLine("Press 'Enter' to continue.");
+			Console.WriteLine("R => use random seed");
+			Console.WriteLine("P => use a preset");
+			Console.WriteLine("B => use a buffer");
+			Console.WriteLine("Enter => continue");
 
 			do
 			{
 				cki = Console.ReadKey();
+
 				if (cki.Key == ConsoleKey.R)
 				{
 					isPreset = false;
-				}
-				if (cki.Key == ConsoleKey.H)
-				{
-					Console.WriteLine("R => use random");
-					Console.WriteLine("P => use preset");
-					Console.WriteLine("B => use buffer");
-					Console.WriteLine("Enter => start game");
 				}
 				if (cki.Key == ConsoleKey.P)
 				{
@@ -160,9 +155,17 @@ namespace ConwaysGameOfLife
 				}
 				if (cki.Key == ConsoleKey.B)
 				{
-					useBuffer = true;
+
+					cellsDraw.buffer = 5;
+					cellsUpdate.buffer = 5;
+				}
+				if (cki.Key == ConsoleKey.W)
+				{
+					cellsDraw.Wrap = true;
+					cellsUpdate.Wrap = true;
 				}
 			} while (cki.Key != ConsoleKey.Enter);
+
 
 			if (isPreset)
 			{
@@ -178,8 +181,6 @@ namespace ConwaysGameOfLife
 			Console.Clear();
 
 			RemoveConsoleFlicker();
-
-			//
 
 			if (isPreset)
 			{
