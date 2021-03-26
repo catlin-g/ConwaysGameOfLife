@@ -13,7 +13,7 @@ namespace ConwaysGameOfLife
 		public int buffer;
 		public bool Wrap;
 
-		public Cells(int width, int height)
+		public Cells(int width, int height, int buffer, bool wrap)
 		{
 			/*if (width == 0)
 			{
@@ -24,7 +24,9 @@ namespace ConwaysGameOfLife
 				throw new ArgumentException("height cannot be 0", nameof(height));
 			}*/
 
-			cells = new bool[height + buffer, width + buffer];
+			this.buffer = buffer;
+			this.Wrap = wrap;
+			cells = new bool[height + (buffer * 2), width + (buffer * 2)];
 		}
 
 		public void SetValue(int x, int y, bool value)
@@ -55,10 +57,7 @@ namespace ConwaysGameOfLife
 			return cells[GetCoordinate(y, Height), GetCoordinate(x, Width)];
 		}
 
-		private int GetCoordinate(int dividend, int divisor)
-		{
-			return Wrap ? ModuloCore(dividend, divisor) : dividend;
-		}
+		private int GetCoordinate(int dividend, int divisor) => Wrap ? ModuloCore(dividend, divisor) : dividend;
 
 		private static int ModuloCore(int dividend, int divisor)
 			=> ((dividend % divisor) + divisor) % divisor;
@@ -131,22 +130,7 @@ namespace ConwaysGameOfLife
 					Console.Write(draw);
 				}
 			}
-
 			Console.WriteLine();
-			Console.WriteLine("******************");
-
-			for (var y = 0; y < Height; y++)
-			{
-				for (var x = 0; x < Width; x++)
-				{
-					if (x == 0)
-					{
-						Console.WriteLine();
-					}
-					var draw = GetValue(x, y) ? AliveCellSymbol + " " : " .";
-					Console.Write(draw);
-				}
-			}
 		}
 	}
 }

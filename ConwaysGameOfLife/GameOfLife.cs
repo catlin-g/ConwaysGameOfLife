@@ -16,29 +16,26 @@ namespace ConwaysGameOfLife
 		private readonly int height = 10;
 
 		private readonly float prosperous = 0.65f;
-
-		private bool isPreset = false;
-		private string path = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\";
+		private readonly int bufferSize = 3;
 
 		private readonly Statistics statistics;
+		private readonly UserConfig settings;
 
-		private bool useBuffer;
+		private static readonly Random random = new Random();
 
-		public GameOfLife()
+		public GameOfLife(UserConfig settings)
 		{
-			cellsA = new Cells(width, height);
-			cellsB = new Cells(width, height);
+			cellsA = new Cells(width, height, settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
+			cellsB = new Cells(width, height, settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
 			cellsDraw = cellsA;
 			cellsUpdate = cellsB;
+
+			this.settings = settings;
+
 			statistics = new Statistics();
 		}
 
-		private static Random random = new Random();
-
-		private static bool ShouldBeAlive(float changeOfBeingAlive)
-		{
-			return random.NextDouble() < changeOfBeingAlive;
-		}
+		private static bool ShouldBeAlive(float changeOfBeingAlive) => random.NextDouble() < changeOfBeingAlive;
 
 		private void GenerateRandomSeed(Cells cells, float prosperous)
 		{
@@ -53,15 +50,9 @@ namespace ConwaysGameOfLife
 			}
 		}
 
-		private void DrawCurrentGeneration()
-		{
-			cellsDraw.DrawConsole();
-		}
+		private void DrawCurrentGeneration() => cellsDraw.DrawConsole();
 
-		private void DrawGUI()
-		{
-			statistics.Print();
-		}
+		private void DrawGUI() => statistics.Print();
 
 		private void GenerateNextGeneration()
 		{
@@ -84,12 +75,12 @@ namespace ConwaysGameOfLife
 
 		private void LoadState()
 		{
-			if (File.Exists(path))
+			if (File.Exists(settings.GetString()))
 			{
-				var totalLines = File.ReadAllLines(path);
+				var totalLines = File.ReadAllLines(settings.GetString());
 				if (totalLines.Length > 0)
 				{
-					var cellsPreset = new Cells(totalLines.Length, totalLines[0].Length);
+					var cellsPreset = new Cells(totalLines.Length, totalLines[0].Length, settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
 					var y = 0;
 
 					foreach (var line in totalLines)
@@ -103,7 +94,7 @@ namespace ConwaysGameOfLife
 						y++;
 					}
 
-					var val = (totalLines[0].Length == width) && (totalLines.Length == height);
+					var val = (totalLines[0].Length == cellsDraw.Width) && (totalLines.Length == cellsDraw.Height);
 
 					cellsDraw = val
 						? cellsPreset
@@ -132,61 +123,17 @@ namespace ConwaysGameOfLife
 			return canvas;
 		}
 
-		public void HandleUserInput()
-		{
-			ConsoleKeyInfo cki;
-
-			Console.WriteLine("R => use random seed");
-			Console.WriteLine("P => use a preset");
-			Console.WriteLine("B => use a buffer");
-			Console.WriteLine("Enter => continue");
-
-			do
-			{
-				cki = Console.ReadKey();
-
-				if (cki.Key == ConsoleKey.R)
-				{
-					isPreset = false;
-				}
-				if (cki.Key == ConsoleKey.P)
-				{
-					isPreset = true;
-				}
-				if (cki.Key == ConsoleKey.B)
-				{
-
-					cellsDraw.buffer = 5;
-					cellsUpdate.buffer = 5;
-				}
-				if (cki.Key == ConsoleKey.W)
-				{
-					cellsDraw.Wrap = true;
-					cellsUpdate.Wrap = true;
-				}
-			} while (cki.Key != ConsoleKey.Enter);
-
-
-			if (isPreset)
-			{
-				Console.WriteLine("Type the name of the preset to load and press 'Enter'.");
-
-				var userInput = Console.ReadLine();
-				path += userInput + ".txt";
-			}
-		}
-
 		public void Initialise()
 		{
 			Console.Clear();
 
 			RemoveConsoleFlicker();
 
-			if (isPreset)
+			if (settings.GetUsePreset())
 			{
 				LoadState();
 			}
-			else
+			else if (settings.GetUseRandom())
 			{
 				GenerateRandomSeed(cellsDraw, prosperous);
 			}
