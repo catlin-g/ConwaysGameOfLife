@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace ConwaysGameOfLife
 {
-	internal class GameOfLife
+	class GameOfLife
 	{
 		private readonly Cells cellsA;
 		private readonly Cells cellsB;
@@ -12,11 +12,11 @@ namespace ConwaysGameOfLife
 		private Cells cellsDraw;
 		private Cells cellsUpdate;
 
-		private readonly int width = 10;
-		private readonly int height = 10;
+		private readonly int width = 20;
+		private readonly int height = 20;
 
-		private readonly float prosperous = 0.65f;
-		private readonly int bufferSize = 3;
+		private readonly float prosperous;
+		private readonly int bufferSize = 5;
 
 		private readonly Statistics statistics;
 		private readonly UserConfig settings;
@@ -30,9 +30,10 @@ namespace ConwaysGameOfLife
 			cellsDraw = cellsA;
 			cellsUpdate = cellsB;
 
-			this.settings = settings;
-
 			statistics = new Statistics();
+
+			this.settings = settings;
+			prosperous = settings.GetProsperity();
 		}
 
 		private static bool ShouldBeAlive(float changeOfBeingAlive) => random.NextDouble() < changeOfBeingAlive;
@@ -80,7 +81,7 @@ namespace ConwaysGameOfLife
 				var totalLines = File.ReadAllLines(settings.GetString());
 				if (totalLines.Length > 0)
 				{
-					var cellsPreset = new Cells(totalLines.Length, totalLines[0].Length, settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
+					var cellsPreset = new Cells(totalLines[0].Length, totalLines.Length, settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
 					var y = 0;
 
 					foreach (var line in totalLines)

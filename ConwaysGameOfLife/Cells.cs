@@ -87,13 +87,13 @@ namespace ConwaysGameOfLife
 				}
 			}
 		}
+
 		private static int GetAliveNeighbours(int cellX, int cellY, Cells currentState)
 		{
 			var aliveNeighbours = 0;
 
 			for (var y = cellY - 1; y < cellY + 2; y++)
 			{
-
 				var validY = (y >= 0) && (y <= (currentState.Height - 1));
 
 				if (!validY && !currentState.Wrap)
