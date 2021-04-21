@@ -19,7 +19,7 @@ As GoL is infinite, but the size of the program is finite, this lead to 'patholo
 2. Buffer - uses a hidden active zone outside the visible active zone so that edge effects are less noticeable.
 3. Wrap - active areas that move across boundaries and reappear on the opposite edge.
 
-Once a valid seed is created, the following rules are applied simultaneosly on each generation:
+Once a valid seed is created, the following rules are applied simultaneously on each generation:
 1. Any live cell with two or three neighbours survives.
 2. Any dead cell with three live neighbours becomes a live cell.
 3. All other live cells die in the next generation. All other dead cells stay dead.
