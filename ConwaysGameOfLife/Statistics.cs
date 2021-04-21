@@ -4,16 +4,18 @@ namespace ConwaysGameOfLife
 {
 	class Statistics
 	{
-		public int Generation = 0;
-		public int PopulationSize = 0;
-		public int Change = 0;
+		public int generation = 0;
+		public int populationSize = 0;
+		public float percentAlive = 0f;
+		public int change = 0;
 
 		public void Print()
 		{
 			Console.WriteLine();
-			Console.WriteLine("Generation: " + Generation);
-			Console.WriteLine("Population Size: " + PopulationSize + "   ");
-			Console.WriteLine("Change: " + Change + "   ");
+			Console.WriteLine("Generation: " + generation + "   ");
+			Console.WriteLine("Population Size: " + populationSize + "   ");
+			Console.WriteLine("Percent Alive: " + percentAlive + "%   ");
+			Console.WriteLine("Change: " + change + "   ");
 		}
 	}
 }

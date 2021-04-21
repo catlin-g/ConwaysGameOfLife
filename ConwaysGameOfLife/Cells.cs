@@ -15,47 +15,16 @@ namespace ConwaysGameOfLife
 
 		public Cells(int width, int height, int buffer, bool wrap)
 		{
-			/*if (width == 0)
-			{
-				throw new ArgumentException("width cannot be 0", nameof(width));
-			}
-			if (height == 0)
-			{
-				throw new ArgumentException("height cannot be 0", nameof(height));
-			}*/
-
 			this.buffer = buffer;
 			this.Wrap = wrap;
 			cells = new bool[height + (buffer * 2), width + (buffer * 2)];
 		}
 
-		public void SetValue(int x, int y, bool value)
-		{
-			/*if (x < 0 || x >= Width)
-			{
-				throw new ArgumentException("width cannot be less than 0 or greater than the grid width");
-			}
-			if (y < 0 || y >= Height)
-			{
-				throw new ArgumentException("height cannot be less than 0 or greater than the grid height");
-			}*/
+		public int GetTotalCells() => Width * Height;
 
-			cells[GetCoordinate(y, Height), GetCoordinate(x, Width)] = value;
-		}
+		public void SetValue(int x, int y, bool value) => cells[GetCoordinate(y, Height), GetCoordinate(x, Width)] = value;
 
-		public bool GetValue(int x, int y)
-		{
-			/*if (x < 0 || x >= Width)
-			{
-				throw new ArgumentException("width cannot be less than 0 or greater than the grid width");
-			}
-			if (y < 0 || y >= Height)
-			{
-				throw new ArgumentException("height cannot be less than 0 or greater than the grid height");
-			}*/
-
-			return cells[GetCoordinate(y, Height), GetCoordinate(x, Width)];
-		}
+		public bool GetValue(int x, int y) => cells[GetCoordinate(y, Height), GetCoordinate(x, Width)];
 
 		private int GetCoordinate(int dividend, int divisor) => Wrap ? ModuloCore(dividend, divisor) : dividend;
 

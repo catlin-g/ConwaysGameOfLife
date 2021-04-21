@@ -1,12 +1,22 @@
 ﻿using System;
+using System.Text;
 
 namespace ConwaysGameOfLife
 {
 	class Program
 	{
-		private static void Main(string[] args)
+		private static void Main()
 		{
-			Console.OutputEncoding = System.Text.Encoding.Unicode;
+			Console.Title = "Conway's Game of Life";
+			Console.OutputEncoding = Encoding.Unicode;
+			Console.CursorVisible = false;
+			Console.WindowWidth = 90;
+			Console.BufferWidth = 90;
+			Console.WindowHeight = 40;
+			Console.BufferHeight = 40;
+			Console.BackgroundColor = ConsoleColor.Gray;
+			Console.Clear();
+			Console.ForegroundColor = ConsoleColor.Black;
 
 			var userConfig = UserConfig.UserInput();
 			var gameOfLife = new GameOfLife(userConfig);

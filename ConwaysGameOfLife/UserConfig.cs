@@ -4,35 +4,41 @@ namespace ConwaysGameOfLife
 {
 	class UserConfig
 	{
-		private static readonly char arrow = '\u25BA';
-
+		private readonly int width;
+		private readonly int height;
 		private readonly bool isRandom;
-		private readonly string path;
+		private readonly string presetPath;
 		private readonly bool useBuffer;
 		private readonly bool useWrap;
 		private readonly float prosperity;
 
-		public UserConfig(bool isRandom, string path, bool useBuffer, bool useWrap, float prosperity)
+		public UserConfig(int width, int height, bool isRandom, string presetPath, bool useBuffer, bool useWrap, float prosperity)
 		{
 			this.isRandom = isRandom;
-			this.path = path;
+			this.presetPath = presetPath;
 			this.useBuffer = useBuffer;
 			this.useWrap = useWrap;
 			this.prosperity = prosperity;
+			this.width = width;
+			this.height = height;
 		}
 
-		public bool GetUseRandom() => isRandom;
+		public int GetWidth() => width;
 
-		public bool GetUseBuffer() => useBuffer;
+		public int GetHeight() => height;
+
+		public bool GetUseRandom() => isRandom;
 
 		public string GetString()
 		{
 			var saveLocation = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\";
 			var fileType = ".txt";
-			return saveLocation + path + fileType;
+			return saveLocation + presetPath + fileType;
 		}
 
-		public bool GetUsePreset() => !string.IsNullOrEmpty(path);
+		public bool GetUsePreset() => !string.IsNullOrEmpty(presetPath);
+
+		public bool GetUseBuffer() => useBuffer;
 
 		public bool GetUseWrap() => useWrap;
 
@@ -40,26 +46,27 @@ namespace ConwaysGameOfLife
 
 		public static UserConfig UserInput()
 		{
-			// Initial pattern / seed
+			ConsoleKeyInfo cki;
 			var isRandom = true;
 			var isPreset = false;
-
-			// Boundary type
 			var useHard = true;
 			var useBuffer = false;
 			var useWrap = false;
-
-			// If Preset
 			var presetName = @"StillLife/Block";
-
-			// If Random
 			var percentAlive = 0.50f;
-
-			ConsoleKeyInfo cki;
+			var width = 20;
+			var height = 20;
 
 			do
 			{
-				PrintPatternSelectionMenu(isRandom, isPreset);
+				PrintMenus.StartMenu();
+				cki = Console.ReadKey(true);
+				Console.Clear();
+			} while (cki.Key != ConsoleKey.Enter);
+
+			do
+			{
+				PrintMenus.PrintPatternSelectionMenu(isRandom, isPreset);
 				cki = Console.ReadKey(true);
 
 				if (cki.Key == ConsoleKey.R)
@@ -78,7 +85,7 @@ namespace ConwaysGameOfLife
 
 			do
 			{
-				PrintBoundarySelectionMenu(useHard, useBuffer, useWrap);
+				PrintMenus.PrintBoundarySelectionMenu(useHard, useBuffer, useWrap);
 
 				cki = Console.ReadKey(true);
 
@@ -103,52 +110,22 @@ namespace ConwaysGameOfLife
 
 			if (isPreset)
 			{
-				PrintPresetSelectionMenu();
+				PrintMenus.PrintPresetSelectionMenu();
 				presetName = Console.ReadLine();
+				width = 20;
+				height = 20;
 			}
 
 			if (isRandom)
 			{
-				PrintRandomSelectionMenu();
+				PrintMenus.PrintRandomSelectionMenu();
 				percentAlive = float.Parse("0." + Console.ReadLine());
+
+				width = 20;
+				height = 20;
 			}
 
-			return new UserConfig(isRandom, isPreset ? presetName : string.Empty, useBuffer, useWrap, percentAlive);
-		}
-
-		public static void PrintPatternSelectionMenu(bool isRandom, bool isPreset)
-		{
-			RemoveConsoleFlicker();
-
-			Console.WriteLine("Select an initial pattern (seed):");
-			Console.WriteLine(" " + (isRandom ? arrow : ' ') + " R => generate a random field");
-			Console.WriteLine(" " + (isPreset ? arrow : ' ') + " P => use a preset");
-			Console.WriteLine("Enter => continue");
-		}
-
-		public static void PrintBoundarySelectionMenu(bool useHard, bool useBuffer, bool useWrap)
-		{
-			RemoveConsoleFlicker();
-
-			Console.WriteLine("Choose a boundary type:");
-			Console.WriteLine(" " + (useHard ? arrow : ' ') + " H => hard boundary (cells die outside the active zone)");
-			Console.WriteLine(" " + (useBuffer ? arrow : ' ') + " B => buffer (creates a hidden active zone)");
-			Console.WriteLine(" " + (useWrap ? arrow : ' ') + " W => wrap (active zones move across and reappear on opposite edges)");
-			Console.WriteLine("Enter => continue");
-		}
-
-		public static void PrintPresetSelectionMenu()
-		{
-			Console.WriteLine("Type the name of the preset to load and press 'Enter'.");
-			Console.Write(arrow);
-		}
-
-		public static void PrintRandomSelectionMenu() => Console.WriteLine("Type the percentage of cells to be alive (0-100) and press 'Enter'.");
-
-		private static void RemoveConsoleFlicker()
-		{
-			Console.CursorVisible = false;
-			Console.SetCursorPosition(0, 0);
+			return new UserConfig(width, height, isRandom, isPreset ? presetName : string.Empty, useBuffer, useWrap, percentAlive);
 		}
 	}
 }

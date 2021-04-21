@@ -12,9 +12,6 @@ namespace ConwaysGameOfLife
 		private Cells cellsDraw;
 		private Cells cellsUpdate;
 
-		private readonly int width = 20;
-		private readonly int height = 20;
-
 		private readonly float prosperous;
 		private readonly int bufferSize = 5;
 
@@ -25,8 +22,8 @@ namespace ConwaysGameOfLife
 
 		public GameOfLife(UserConfig settings)
 		{
-			cellsA = new Cells(width, height, settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
-			cellsB = new Cells(width, height, settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
+			cellsA = new Cells(settings.GetWidth(), settings.GetHeight(), settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
+			cellsB = new Cells(settings.GetWidth(), settings.GetHeight(), settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
 			cellsDraw = cellsA;
 			cellsUpdate = cellsB;
 
@@ -63,15 +60,12 @@ namespace ConwaysGameOfLife
 			cellsDraw = cellsUpdate;
 			cellsUpdate = temp;
 
-			statistics.Change = cellsDraw.GetPopulationCount() - cellsUpdate.GetPopulationCount();
-			statistics.PopulationSize = cellsDraw.GetPopulationCount();
-			statistics.Generation++;
-		}
+			var totalCells = cellsDraw.Height * cellsDraw.Width;
 
-		private void RemoveConsoleFlicker()
-		{
-			Console.CursorVisible = false;
-			Console.SetCursorPosition(0, 0);
+			statistics.generation++;
+			statistics.populationSize = cellsDraw.GetPopulationCount();
+			statistics.percentAlive = (float)cellsDraw.GetPopulationCount() / totalCells * 100;
+			statistics.change = cellsDraw.GetPopulationCount() - cellsUpdate.GetPopulationCount();
 		}
 
 		private void LoadState()
@@ -103,12 +97,12 @@ namespace ConwaysGameOfLife
 				}
 				else
 				{
-					// print error message
+					throw new ArgumentException("File is empty.");
 				}
 			}
 			else
 			{
-				// print error message
+				throw new ArgumentException("File does not exist.");
 			}
 		}
 
@@ -122,6 +116,11 @@ namespace ConwaysGameOfLife
 				}
 			}
 			return canvas;
+		}
+		private void RemoveConsoleFlicker()
+		{
+			Console.CursorVisible = false;
+			Console.SetCursorPosition(0, 0);
 		}
 
 		public void Initialise()
