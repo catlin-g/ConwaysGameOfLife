@@ -11,6 +11,7 @@ It features a basic interactive menu using key presses, a grid to display the ga
 Initial configuration (seed) of the game can be either:
 * a 'randomised' field of dead/alive cells, or 
 * a 'preset' loaded from a .txt file.
+
 Upon choosing a randonised seed, the user may enter a value between 0 and 100 which specifies the chance that a cell may be dead or alive.
 Upon choosing a preset, the user may enter the file name to load into the active zone.
 
