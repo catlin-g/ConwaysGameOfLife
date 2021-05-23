@@ -12,28 +12,31 @@ namespace ConwaysGameOfLife
 		private Cells cellsDraw;
 		private Cells cellsUpdate;
 
-		private readonly float prosperous;
 		private readonly int bufferSize = 5;
+		private readonly int totalCells;
 
 		private readonly Statistics statistics;
 		private readonly UserConfig settings;
 
+		const int SleepTime = 200;
+
 		private static readonly Random random = new Random();
 
-		public GameOfLife(UserConfig settings)
+		public GameOfLife(UserConfig userConfig)
 		{
-			cellsA = new Cells(settings.GetWidth(), settings.GetHeight(), settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
-			cellsB = new Cells(settings.GetWidth(), settings.GetHeight(), settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
+			cellsA = new Cells(userConfig.Width, userConfig.Height, userConfig.UseBuffer ? bufferSize : 0, userConfig.UseWrap);
+			cellsB = new Cells(userConfig.Width, userConfig.Height, userConfig.UseBuffer ? bufferSize : 0, userConfig.UseWrap);
 			cellsDraw = cellsA;
 			cellsUpdate = cellsB;
 
-			statistics = new Statistics();
+			totalCells = userConfig.Width * userConfig.Height;
 
-			this.settings = settings;
-			prosperous = settings.GetProsperity();
+			statistics = new Statistics();
+			settings = userConfig;
 		}
 
-		private static bool ShouldBeAlive(float changeOfBeingAlive) => random.NextDouble() < changeOfBeingAlive;
+		private static bool ShouldBeAlive(float changeOfBeingAlive)
+			=> (float)random.NextDouble() < changeOfBeingAlive;
 
 		private void GenerateRandomSeed(Cells cells, float prosperous)
 		{
@@ -48,11 +51,13 @@ namespace ConwaysGameOfLife
 			}
 		}
 
-		private void DrawCurrentGeneration() => cellsDraw.DrawConsole();
+		private void DrawCurrentGeneration()
+			=> cellsDraw.DrawConsole();
 
-		private void DrawGUI() => statistics.Print();
+		private void DrawGUI()
+			=> statistics.Print();
 
-		private void GenerateNextGeneration()
+		private bool GenerateNextGeneration()
 		{
 			cellsUpdate.Update(cellsDraw);
 
@@ -60,22 +65,23 @@ namespace ConwaysGameOfLife
 			cellsDraw = cellsUpdate;
 			cellsUpdate = temp;
 
-			var totalCells = cellsDraw.Height * cellsDraw.Width;
+			statistics.Generation++;
+			statistics.PopulationSize = cellsDraw.GetPopulationCount();
+			statistics.PercentAlive = (float)cellsDraw.GetPopulationCount() / totalCells * 100f;
+			statistics.Change = cellsDraw.GetPopulationCount() - cellsUpdate.GetPopulationCount();
 
-			statistics.generation++;
-			statistics.populationSize = cellsDraw.GetPopulationCount();
-			statistics.percentAlive = (float)cellsDraw.GetPopulationCount() / totalCells * 100;
-			statistics.change = cellsDraw.GetPopulationCount() - cellsUpdate.GetPopulationCount();
+			return true;
 		}
 
 		private void LoadState()
 		{
-			if (File.Exists(settings.GetString()))
+			var path = settings.GetPath();
+			if (File.Exists(path))
 			{
-				var totalLines = File.ReadAllLines(settings.GetString());
+				var totalLines = File.ReadAllLines(path);
 				if (totalLines.Length > 0)
 				{
-					var cellsPreset = new Cells(totalLines[0].Length, totalLines.Length, settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
+					var cellsPreset = new Cells(totalLines[0].Length, totalLines.Length, settings.UseBuffer ? bufferSize : 0, settings.UseWrap);
 					var y = 0;
 
 					foreach (var line in totalLines)
@@ -117,47 +123,32 @@ namespace ConwaysGameOfLife
 			}
 			return canvas;
 		}
-		private void RemoveConsoleFlicker()
-		{
-			Console.CursorVisible = false;
-			Console.SetCursorPosition(0, 0);
-		}
 
 		public void Initialise()
 		{
 			Console.Clear();
+			PrintMenus.RemoveConsoleFlicker();
 
-			RemoveConsoleFlicker();
-
-			if (settings.GetUsePreset())
+			if (settings.UsePreset)
 			{
 				LoadState();
 			}
-			else if (settings.GetUseRandom())
+			else if (settings.UseRandom)
 			{
-				GenerateRandomSeed(cellsDraw, prosperous);
+				GenerateRandomSeed(cellsDraw, settings.Prosperity);
 			}
-
-			DrawCurrentGeneration();
-			DrawGUI();
-
-			Thread.Sleep(200);
 		}
 
 		public void Run()
 		{
-			var cellsAlive = true;
-
-			while (cellsAlive)
+			do
 			{
-				RemoveConsoleFlicker();
-
-				GenerateNextGeneration();
+				PrintMenus.RemoveConsoleFlicker();
 				DrawCurrentGeneration();
 				DrawGUI();
-
-				Thread.Sleep(200);
+				Thread.Sleep(SleepTime);
 			}
+			while (GenerateNextGeneration());
 		}
 	}
 }

@@ -2,9 +2,9 @@
 
 namespace ConwaysGameOfLife
 {
-	class PrintMenus
+	public static class PrintMenus
 	{
-		private static readonly char arrow = '\u25BA';
+		private const char ARROW = '\u25BA';
 
 		public static void StartMenu()
 		{
@@ -26,8 +26,8 @@ namespace ConwaysGameOfLife
 			RemoveConsoleFlicker();
 
 			Console.WriteLine("Select an initial pattern (seed):");
-			Console.WriteLine(" " + (isRandom ? arrow : ' ') + " R => generate a random field");
-			Console.WriteLine(" " + (isPreset ? arrow : ' ') + " P => use a preset");
+			Console.WriteLine(" " + (isRandom ? ARROW : ' ') + " R => generate a random field");
+			Console.WriteLine(" " + (isPreset ? ARROW : ' ') + " P => use a preset");
 			Console.WriteLine("Enter => continue");
 		}
 
@@ -36,9 +36,9 @@ namespace ConwaysGameOfLife
 			RemoveConsoleFlicker();
 
 			Console.WriteLine("Choose a boundary type:");
-			Console.WriteLine(" " + (useHard ? arrow : ' ') + " H => hard boundary (cells die outside the boundary)");
-			Console.WriteLine(" " + (useBuffer ? arrow : ' ') + " B => buffer (creates a hidden active zone outside the boundary)");
-			Console.WriteLine(" " + (useWrap ? arrow : ' ') + " W => wrap (active zones move across boundaries and reappear on opposite edges)");
+			Console.WriteLine($" {(useHard ? ARROW : ' ')} H => hard boundary (cells die outside the boundary)");
+			Console.WriteLine(" " + (useBuffer ? ARROW : ' ') + " B => buffer (creates a hidden active zone outside the boundary)");
+			Console.WriteLine(" " + (useWrap ? ARROW : ' ') + " W => wrap (active zones move across boundaries and reappear on opposite edges)");
 			Console.WriteLine("Enter => continue");
 		}
 
@@ -54,10 +54,10 @@ namespace ConwaysGameOfLife
 			RemoveConsoleFlicker();
 
 			Console.WriteLine("Type the name of the preset to load and press 'Enter'.");
-			Console.Write(" " + arrow + " ");
+			Console.Write(" " + ARROW + " ");
 		}
 
-		private static void RemoveConsoleFlicker()
+		public static void RemoveConsoleFlicker()
 		{
 			Console.CursorVisible = false;
 			Console.SetCursorPosition(0, 0);
