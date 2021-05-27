@@ -57,7 +57,7 @@ namespace ConwaysGameOfLife
 			Console.Write(" " + arrow + " ");
 		}
 
-		private static void RemoveConsoleFlicker()
+		public static void RemoveConsoleFlicker()
 		{
 			Console.CursorVisible = false;
 			Console.SetCursorPosition(0, 0);

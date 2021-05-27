@@ -12,11 +12,13 @@ namespace ConwaysGameOfLife
 		private Cells cellsDraw;
 		private Cells cellsUpdate;
 
-		private readonly float prosperous;
 		private readonly int bufferSize = 5;
+		private readonly int totalCells;
 
 		private readonly Statistics statistics;
 		private readonly UserConfig settings;
+
+		private const int SleepTime = 200;
 
 		private static readonly Random random = new Random();
 
@@ -29,17 +31,19 @@ namespace ConwaysGameOfLife
 
 			statistics = new Statistics();
 
+			totalCells = settings.Width * settings.Height;
+
 			this.settings = settings;
-			prosperous = settings.Prosperity;
 		}
 
-		private static bool ShouldBeAlive(float changeOfBeingAlive) => random.NextDouble() < changeOfBeingAlive;
+		private static bool ShouldBeAlive(float chanceOfBeingAlive)
+			=> random.NextDouble() < chanceOfBeingAlive;
 
 		private void GenerateRandomSeed(Cells cells, float prosperous)
 		{
-			for (var y = 0; y < cells.Height; y++)
+			for (var y = 0; y < cells.Height; ++y)
 			{
-				for (var x = 0; x < cells.Width; x++)
+				for (var x = 0; x < cells.Width; ++x)
 				{
 					var value = ShouldBeAlive(prosperous);
 
@@ -48,11 +52,13 @@ namespace ConwaysGameOfLife
 			}
 		}
 
-		private void DrawCurrentGeneration() => cellsDraw.DrawConsole();
+		private void DrawCurrentGeneration()
+			=> cellsDraw.DrawConsole();
 
-		private void DrawGUI() => statistics.Print();
+		private void DrawGUI()
+			=> statistics.Print();
 
-		private void GenerateNextGeneration()
+		private bool GenerateNextGeneration()
 		{
 			cellsUpdate.Update(cellsDraw);
 
@@ -60,12 +66,12 @@ namespace ConwaysGameOfLife
 			cellsDraw = cellsUpdate;
 			cellsUpdate = temp;
 
-			var totalCells = cellsDraw.Height * cellsDraw.Width;
-
 			statistics.generation++;
 			statistics.populationSize = cellsDraw.GetPopulationCount();
-			statistics.percentAlive = (float)cellsDraw.GetPopulationCount() / totalCells * 100;
+			statistics.percentAlive = (float)cellsDraw.GetPopulationCount() / totalCells * 100f;
 			statistics.change = cellsDraw.GetPopulationCount() - cellsUpdate.GetPopulationCount();
+
+			return true;
 		}
 
 		private void LoadState()
@@ -108,56 +114,41 @@ namespace ConwaysGameOfLife
 
 		private Cells Translate(Cells canvas, Cells toPaste)
 		{
-			for (var y = 0; y < toPaste.Height; y++)
+			for (var y = 0; y < toPaste.Height; ++y)
 			{
-				for (var x = 0; x < toPaste.Width; x++)
+				for (var x = 0; x < toPaste.Width; ++x)
 				{
 					canvas.SetValue(x, y, toPaste.GetValue(x, y));
 				}
 			}
 			return canvas;
 		}
-		private void RemoveConsoleFlicker()
-		{
-			Console.CursorVisible = false;
-			Console.SetCursorPosition(0, 0);
-		}
 
 		public void Initialise()
 		{
 			Console.Clear();
+			PrintMenus.RemoveConsoleFlicker();
 
-			RemoveConsoleFlicker();
-
-			if (settings.Preset())
+			if (settings.Preset)
 			{
 				LoadState();
 			}
 			else if (settings.Random)
 			{
-				GenerateRandomSeed(cellsDraw, prosperous);
+				GenerateRandomSeed(cellsDraw, settings.Prosperity);
 			}
-
-			DrawCurrentGeneration();
-			DrawGUI();
-
-			Thread.Sleep(200);
 		}
 
 		public void Run()
 		{
-			var cellsAlive = true;
-
-			while (cellsAlive)
+			do
 			{
-				RemoveConsoleFlicker();
-
-				GenerateNextGeneration();
+				PrintMenus.RemoveConsoleFlicker();
 				DrawCurrentGeneration();
 				DrawGUI();
-
-				Thread.Sleep(200);
+				Thread.Sleep(SleepTime);
 			}
+			while (GenerateNextGeneration());
 		}
 	}
 }

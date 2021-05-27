@@ -30,7 +30,7 @@ namespace ConwaysGameOfLife
 			return $"{saveLocation}{presetPath}{fileType}";
 		}
 
-		public bool Preset()
+		public bool Preset
 			=> !string.IsNullOrEmpty(presetPath);
 
 		public bool Buffer { get; }
