@@ -2,61 +2,46 @@
 
 namespace ConwaysGameOfLife
 {
-	class UserConfig
+	internal class UserConfig
 	{
-		private readonly int width;
-		private readonly int height;
-		private readonly bool isRandom;
-		private readonly string presetPath;
-		private readonly bool useBuffer;
-		private readonly bool useWrap;
-		private readonly float prosperity;
-
 		public UserConfig(int width, int height, bool isRandom, string presetPath, bool useBuffer, bool useWrap, float prosperity)
 		{
-			this.isRandom = isRandom;
+			Width = width;
+			Height = height;
+			Random = isRandom;
 			this.presetPath = presetPath;
-			this.useBuffer = useBuffer;
-			this.useWrap = useWrap;
-			this.prosperity = prosperity;
-			this.width = width;
-			this.height = height;
+			Buffer = useBuffer;
+			Wrap = useWrap;
+			Prosperity = prosperity;
 		}
 
-		public int GetWidth() => width;
+		public int Width { get; }
 
-		public int GetHeight() => height;
+		public int Height { get; }
 
-		public bool GetUseRandom() => isRandom;
+		public bool Random { get; }
 
-		public string GetString()
+		private readonly string presetPath;
+
+		public string Path()
 		{
 			var saveLocation = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\";
 			var fileType = ".txt";
-			return saveLocation + presetPath + fileType;
+			return $"{saveLocation}{presetPath}{fileType}";
 		}
 
-		public bool GetUsePreset() => !string.IsNullOrEmpty(presetPath);
+		public bool Preset()
+			=> !string.IsNullOrEmpty(presetPath);
 
-		public bool GetUseBuffer() => useBuffer;
+		public bool Buffer { get; }
 
-		public bool GetUseWrap() => useWrap;
+		public bool Wrap { get; }
 
-		public float GetProsperity() => prosperity;
+		public float Prosperity { get; }
 
-		public static UserConfig UserInput()
+		public static UserConfig GetUserInput()
 		{
 			ConsoleKeyInfo cki;
-			var isRandom = true;
-			var isPreset = false;
-			var useHard = true;
-			var useBuffer = false;
-			var useWrap = false;
-			var presetName = @"StillLife/Block";
-			var percentAlive = 0.50f;
-			var width = 20;
-			var height = 20;
-
 			do
 			{
 				PrintMenus.StartMenu();
@@ -64,6 +49,8 @@ namespace ConwaysGameOfLife
 				Console.Clear();
 			} while (cki.Key != ConsoleKey.Enter);
 
+			var isRandom = true;
+			var isPreset = false;
 			do
 			{
 				PrintMenus.PrintPatternSelectionMenu(isRandom, isPreset);
@@ -83,6 +70,9 @@ namespace ConwaysGameOfLife
 
 			Console.Clear();
 
+			var useHard = true;
+			var useBuffer = false;
+			var useWrap = false;
 			do
 			{
 				PrintMenus.PrintBoundarySelectionMenu(useHard, useBuffer, useWrap);
@@ -102,30 +92,33 @@ namespace ConwaysGameOfLife
 				if (cki.Key == ConsoleKey.W)
 				{
 					useWrap = true;
-					useBuffer = useHard = false;
+					useBuffer = false;
+					useHard = false;
 				}
 			} while (cki.Key != ConsoleKey.Enter);
 
 			Console.Clear();
 
+			var presetName = @"StillLife/Block";
 			if (isPreset)
 			{
 				PrintMenus.PrintPresetSelectionMenu();
 				presetName = Console.ReadLine();
-				width = 20;
-				height = 20;
 			}
 
+			var percentAlive = 0.50f;
 			if (isRandom)
 			{
 				PrintMenus.PrintRandomSelectionMenu();
 				percentAlive = float.Parse("0." + Console.ReadLine());
-
-				width = 20;
-				height = 20;
 			}
 
-			return new UserConfig(width, height, isRandom, isPreset ? presetName : string.Empty, useBuffer, useWrap, percentAlive);
+			var width = 20;
+			var height = 20;
+			var presetPath = isPreset
+				? presetName
+				: string.Empty;
+			return new UserConfig(width, height, isRandom, presetPath, useBuffer, useWrap, percentAlive);
 		}
 	}
 }

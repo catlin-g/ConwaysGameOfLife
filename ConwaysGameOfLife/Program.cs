@@ -18,7 +18,7 @@ namespace ConwaysGameOfLife
 			Console.Clear();
 			Console.ForegroundColor = ConsoleColor.Black;
 
-			var userConfig = UserConfig.UserInput();
+			var userConfig = UserConfig.GetUserInput();
 			var gameOfLife = new GameOfLife(userConfig);
 			gameOfLife.Initialise();
 			gameOfLife.Run();

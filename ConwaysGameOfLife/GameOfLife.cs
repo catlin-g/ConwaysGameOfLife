@@ -22,15 +22,15 @@ namespace ConwaysGameOfLife
 
 		public GameOfLife(UserConfig settings)
 		{
-			cellsA = new Cells(settings.GetWidth(), settings.GetHeight(), settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
-			cellsB = new Cells(settings.GetWidth(), settings.GetHeight(), settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
+			cellsA = new Cells(settings.Width, settings.Height, settings.Buffer ? bufferSize : 0, settings.Wrap);
+			cellsB = new Cells(settings.Width, settings.Height, settings.Buffer ? bufferSize : 0, settings.Wrap);
 			cellsDraw = cellsA;
 			cellsUpdate = cellsB;
 
 			statistics = new Statistics();
 
 			this.settings = settings;
-			prosperous = settings.GetProsperity();
+			prosperous = settings.Prosperity;
 		}
 
 		private static bool ShouldBeAlive(float changeOfBeingAlive) => random.NextDouble() < changeOfBeingAlive;
@@ -70,12 +70,12 @@ namespace ConwaysGameOfLife
 
 		private void LoadState()
 		{
-			if (File.Exists(settings.GetString()))
+			if (File.Exists(settings.Path()))
 			{
-				var totalLines = File.ReadAllLines(settings.GetString());
+				var totalLines = File.ReadAllLines(settings.Path());
 				if (totalLines.Length > 0)
 				{
-					var cellsPreset = new Cells(totalLines[0].Length, totalLines.Length, settings.GetUseBuffer() ? bufferSize : 0, settings.GetUseWrap());
+					var cellsPreset = new Cells(totalLines[0].Length, totalLines.Length, settings.Buffer ? bufferSize : 0, settings.Wrap);
 					var y = 0;
 
 					foreach (var line in totalLines)
@@ -129,11 +129,11 @@ namespace ConwaysGameOfLife
 
 			RemoveConsoleFlicker();
 
-			if (settings.GetUsePreset())
+			if (settings.Preset())
 			{
 				LoadState();
 			}
-			else if (settings.GetUseRandom())
+			else if (settings.Random)
 			{
 				GenerateRandomSeed(cellsDraw, prosperous);
 			}
