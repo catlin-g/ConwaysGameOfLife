@@ -38,9 +38,9 @@ namespace ConwaysGameOfLife
 		{
 			numOfCellsAlive = 0;
 
-			for (var y = 0; y < Height; y++)
+			for (var y = 0; y < Height; ++y)
 			{
-				for (var x = 0; x < Width; x++)
+				for (var x = 0; x < Width; ++x)
 				{
 					var aliveNeighbours = GetAliveNeighbours(x, y, currentState);
 					var checkNeighbours = (aliveNeighbours == 2) || (aliveNeighbours == 3);
@@ -61,7 +61,7 @@ namespace ConwaysGameOfLife
 		{
 			var aliveNeighbours = 0;
 
-			for (var y = cellY - 1; y < cellY + 2; y++)
+			for (var y = cellY - 1; y < cellY + 2; ++y)
 			{
 				var validY = (y >= 0) && (y <= (currentState.Height - 1));
 
@@ -70,7 +70,7 @@ namespace ConwaysGameOfLife
 					continue;
 				}
 
-				for (var x = cellX - 1; x < cellX + 2; x++)
+				for (var x = cellX - 1; x < cellX + 2; ++x)
 				{
 					var validX = (x >= 0) && (x <= (currentState.Width - 1));
 
@@ -87,9 +87,9 @@ namespace ConwaysGameOfLife
 
 		public void DrawConsole()
 		{
-			for (var y = buffer; y < Height - buffer; y++)
+			for (var y = buffer; y < Height - buffer; ++y)
 			{
-				for (var x = buffer; x < Width - buffer; x++)
+				for (var x = buffer; x < Width - buffer; ++x)
 				{
 					if (x == buffer)
 					{

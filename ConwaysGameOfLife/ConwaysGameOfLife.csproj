@@ -70,6 +70,7 @@
     <Content Include="Data\Oscillator\Pentadecathlon.txt" />
     <Content Include="Data\Oscillator\Pulsar.txt" />
     <Content Include="Data\Oscillator\Toad.txt" />
+    <Content Include="CodeReview.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

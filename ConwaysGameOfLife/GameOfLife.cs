@@ -29,10 +29,9 @@ namespace ConwaysGameOfLife
 			cellsDraw = cellsA;
 			cellsUpdate = cellsB;
 
-			statistics = new Statistics();
-
 			totalCells = settings.Width * settings.Height;
 
+			statistics = new Statistics();
 			this.settings = settings;
 		}
 
