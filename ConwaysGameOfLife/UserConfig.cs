@@ -19,16 +19,13 @@ namespace ConwaysGameOfLife
 
 		public bool Random { get; }
 
-		private readonly string presetPath;
-
 		public bool Preset { get; }
 
-		public string PathName()
-		{
-			var saveLocation = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\";
-			var fileType = ".txt";
-			return $"{saveLocation}{presetPath}{fileType}";
-		}
+		private readonly string presetPath;
+
+		private const string DataLocation = @"..\..\Data\";
+		private const string FileType = ".txt";
+		public string PathName() => $"{DataLocation}{presetPath}{FileType}";
 
 		public bool Hard { get; }
 
@@ -46,7 +43,7 @@ namespace ConwaysGameOfLife
 
 			var options = new List<(string, string)>();
 
-			var folders = Directory.GetDirectories(@"..\..\Data\");
+			var folders = Directory.GetDirectories(DataLocation);
 
 			foreach (var folder in folders)
 			{
