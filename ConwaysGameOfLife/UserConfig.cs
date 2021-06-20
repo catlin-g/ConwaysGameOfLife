@@ -1,37 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace ConwaysGameOfLife
 {
 	internal class UserConfig
 	{
-		public UserConfig(int width, int height, bool isRandom, string presetPath, bool useBuffer, bool useWrap, float prosperity)
+		public UserConfig(bool isRandom, bool isPreset, string presetPath, bool useHard, bool useBuffer, bool useWrap, float prosperity)
 		{
-			Width = width;
-			Height = height;
 			Random = isRandom;
+			Preset = isPreset;
 			this.presetPath = presetPath;
+			Hard = useHard;
 			Buffer = useBuffer;
 			Wrap = useWrap;
 			Prosperity = prosperity;
 		}
 
-		public int Width { get; }
-
-		public int Height { get; }
-
 		public bool Random { get; }
 
 		private readonly string presetPath;
 
-		public string Path()
+		public bool Preset { get; }
+
+		public string PathName()
 		{
 			var saveLocation = @"C:\Users\cgrange\source\repos\ConwaysGameOfLife\ConwaysGameOfLife\Data\";
 			var fileType = ".txt";
 			return $"{saveLocation}{presetPath}{fileType}";
 		}
 
-		public bool Preset
-			=> !string.IsNullOrEmpty(presetPath);
+		public bool Hard { get; }
 
 		public bool Buffer { get; }
 
@@ -42,9 +41,26 @@ namespace ConwaysGameOfLife
 		public static UserConfig GetUserInput()
 		{
 			ConsoleKeyInfo cki;
+			ConsoleKey key;
+			var currentSelection = 0;
+
+			var options = new List<(string, string)>();
+
+			var folders = Directory.GetDirectories(@"..\..\Data\");
+
+			foreach (var folder in folders)
+			{
+				var files = Directory.GetFiles(folder);
+
+				foreach (var file in files)
+				{
+					options.Add((Path.GetFileName(folder), Path.GetFileNameWithoutExtension(file)));
+				}
+			}
+
 			do
 			{
-				PrintMenus.StartMenu();
+				Menus.StartMenu();
 				cki = Console.ReadKey(true);
 				Console.Clear();
 			} while (cki.Key != ConsoleKey.Enter);
@@ -53,7 +69,7 @@ namespace ConwaysGameOfLife
 			var isPreset = false;
 			do
 			{
-				PrintMenus.PrintPatternSelectionMenu(isRandom, isPreset);
+				Menus.PrintPatternSelectionMenu(isRandom, isPreset);
 				cki = Console.ReadKey(true);
 
 				if (cki.Key == ConsoleKey.R)
@@ -75,7 +91,7 @@ namespace ConwaysGameOfLife
 			var useWrap = false;
 			do
 			{
-				PrintMenus.PrintBoundarySelectionMenu(useHard, useBuffer, useWrap);
+				Menus.PrintBoundarySelectionMenu(useHard, useBuffer, useWrap);
 
 				cki = Console.ReadKey(true);
 
@@ -102,23 +118,49 @@ namespace ConwaysGameOfLife
 			var presetName = @"StillLife/Block";
 			if (isPreset)
 			{
-				PrintMenus.PrintPresetSelectionMenu();
-				presetName = Console.ReadLine();
+				do
+				{
+					Console.Clear();
+
+					for (var i = 0; i < options.Count; ++i)
+					{
+						if (i == currentSelection)
+						{
+							Console.Write('\u25BA');
+						}
+						Console.WriteLine(options[i].Item2);
+					}
+
+					key = Console.ReadKey(true).Key;
+
+					switch (key)
+					{
+						case ConsoleKey.UpArrow:
+							{
+								currentSelection = currentSelection - 1 < 0 ? options.Count - 1 : --currentSelection;
+								break;
+							}
+						case ConsoleKey.DownArrow:
+							{
+								currentSelection = (currentSelection + 1) % options.Count;
+								break;
+							}
+					}
+					presetName = options[currentSelection].Item1 + "/" + options[currentSelection].Item2;
+				} while (key != ConsoleKey.Enter);
 			}
 
 			var percentAlive = 0.50f;
 			if (isRandom)
 			{
-				PrintMenus.PrintRandomSelectionMenu();
+				Menus.PrintRandomSelectionMenu();
 				percentAlive = float.Parse("0." + Console.ReadLine());
 			}
 
-			var width = 20;
-			var height = 20;
 			var presetPath = isPreset
 				? presetName
 				: string.Empty;
-			return new UserConfig(width, height, isRandom, presetPath, useBuffer, useWrap, percentAlive);
+			return new UserConfig(isRandom, isPreset, presetPath, useHard, useBuffer, useWrap, percentAlive);
 		}
 	}
 }

@@ -12,6 +12,8 @@ namespace ConwaysGameOfLife
 		private Cells cellsDraw;
 		private Cells cellsUpdate;
 
+		private readonly int width = 40;
+		private readonly int height = 20;
 		private readonly int bufferSize = 5;
 		private readonly int totalCells;
 
@@ -24,12 +26,12 @@ namespace ConwaysGameOfLife
 
 		public GameOfLife(UserConfig settings)
 		{
-			cellsA = new Cells(settings.Width, settings.Height, settings.Buffer ? bufferSize : 0, settings.Wrap);
-			cellsB = new Cells(settings.Width, settings.Height, settings.Buffer ? bufferSize : 0, settings.Wrap);
+			cellsA = new Cells(width, height, settings.Buffer ? bufferSize : 0, settings.Wrap);
+			cellsB = new Cells(width, height, settings.Buffer ? bufferSize : 0, settings.Wrap);
 			cellsDraw = cellsA;
 			cellsUpdate = cellsB;
 
-			totalCells = settings.Width * settings.Height;
+			totalCells = width * height;
 
 			statistics = new Statistics();
 			this.settings = settings;
@@ -75,9 +77,9 @@ namespace ConwaysGameOfLife
 
 		private void LoadState()
 		{
-			if (File.Exists(settings.Path()))
+			if (File.Exists(settings.PathName()))
 			{
-				var totalLines = File.ReadAllLines(settings.Path());
+				var totalLines = File.ReadAllLines(settings.PathName());
 				if (totalLines.Length > 0)
 				{
 					var cellsPreset = new Cells(totalLines[0].Length, totalLines.Length, settings.Buffer ? bufferSize : 0, settings.Wrap);
@@ -126,7 +128,7 @@ namespace ConwaysGameOfLife
 		public void Initialise()
 		{
 			Console.Clear();
-			PrintMenus.RemoveConsoleFlicker();
+			Menus.RemoveConsoleFlicker();
 
 			if (settings.Preset)
 			{
@@ -142,7 +144,7 @@ namespace ConwaysGameOfLife
 		{
 			do
 			{
-				PrintMenus.RemoveConsoleFlicker();
+				Menus.RemoveConsoleFlicker();
 				DrawCurrentGeneration();
 				DrawGUI();
 				Thread.Sleep(SleepTime);

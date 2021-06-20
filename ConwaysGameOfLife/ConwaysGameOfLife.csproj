@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cells.cs" />
-    <Compile Include="PrintMenus.cs" />
+    <Compile Include="Menus.cs" />
     <Compile Include="Statistics.cs" />
     <Compile Include="GameOfLife.cs" />
     <Compile Include="Program.cs" />
