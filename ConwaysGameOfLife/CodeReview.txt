@@ -1,5 +1,6 @@
 ﻿Code Review:
-- Game loops -> add in ability to jump back to start screen.
+- Game loops -> add in ability to jump back to start screen. // working on.
 - Exceptions/errors/boundary conditions. Program shouldn't crash on invalid input.
 - Endgame = no change between two generations. Steady states are infinite.
 - Fix variable names, constants, magic numbers, ternary, change from string concat to string interpolation, etc.
+https://fsymbols.com/generators/carty/

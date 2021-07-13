@@ -1,14 +1,24 @@
-﻿namespace ConwaysGameOfLife
+﻿using System;
+using System.Text;
+
+namespace ConwaysGameOfLife
 {
-	class Program
+	internal class Program
 	{
+		private const int ConsoleWindowWidth = 90;
+		private const int ConsoleWindowHeight = 30;
+
 		private static void Main()
 		{
-			Menus.Initialise();
-			var userConfig = UserConfig.GetUserInput();
-			var gameOfLife = new GameOfLife(userConfig);
-			gameOfLife.Initialise();
-			gameOfLife.Run();
+			Console.OutputEncoding = Encoding.Unicode;
+			Console.CursorVisible = false;
+			Console.BackgroundColor = ConsoleColor.Black;
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.SetWindowSize(ConsoleWindowWidth, ConsoleWindowHeight);
+			Console.SetBufferSize(ConsoleWindowWidth, ConsoleWindowHeight);
+			Console.Title = "Conway's Game of Life";
+
+			_ = new Driver();
 		}
 	}
 }

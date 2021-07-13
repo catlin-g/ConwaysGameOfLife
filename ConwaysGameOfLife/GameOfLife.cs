@@ -128,7 +128,7 @@ namespace ConwaysGameOfLife
 		public void Initialise()
 		{
 			Console.Clear();
-			Menus.RemoveConsoleFlicker();
+			Menu.RemoveConsoleFlicker();
 
 			if (settings.Preset)
 			{
@@ -144,7 +144,7 @@ namespace ConwaysGameOfLife
 		{
 			do
 			{
-				Menus.RemoveConsoleFlicker();
+				Menu.RemoveConsoleFlicker();
 				DrawCurrentGeneration();
 				DrawGUI();
 				Thread.Sleep(SleepTime);
