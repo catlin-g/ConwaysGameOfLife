@@ -18,7 +18,8 @@ namespace ConwaysGameOfLife
 			Console.SetBufferSize(ConsoleWindowWidth, ConsoleWindowHeight);
 			Console.Title = "Conway's Game of Life";
 
-			_ = new Driver();
+			var driver = new Driver();
+			driver.Start();
 		}
 	}
 }
